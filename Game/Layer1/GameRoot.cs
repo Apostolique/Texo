@@ -33,7 +33,7 @@ namespace GameProject {
         protected override void LoadContent() {
             _s = new SpriteBatch(GraphicsDevice);
 
-            _camera = new Camera(new Vector2(0, 0), 0, new Vector2(1, 1));
+            _camera = new Camera(new Vector2(0, 0), 0, new Vector2(_depth));
             _canvas = new Canvas();
 
             _pixel = Content.Load<Texture2D>("Pixel");
@@ -59,6 +59,23 @@ namespace GameProject {
             }
             if (_rotateRight.Pressed()) {
                 _camera.Angle -= MathHelper.PiOver4;
+            }
+            if (InputHelper.NewMouse.ScrollWheelValue - InputHelper.OldMouse.ScrollWheelValue != 0) {
+                var diff = InputHelper.NewMouse.ScrollWheelValue - InputHelper.OldMouse.ScrollWheelValue;
+                // TODO: The diff multiplier should be a setting.
+                _linear = Math.Max(_linear - diff * 0.0005f, 0.1f);
+                _depth = LinearToDepth(_linear);
+                _camera.Scale = new Vector2(DepthToZoom(_depth, 0));
+            }
+
+            _camera.UpdateMousePos(InputHelper.NewMouse);
+            _mouseWorld = _camera.MousePos;
+
+            if (_drag.Pressed()) {
+                _mouseAnchor = _mouseWorld;
+            }
+            if (_drag.HeldOnly()) {
+                _camera.Pos += _mouseAnchor - _mouseWorld;
             }
 
             if (_play) {
@@ -101,15 +118,51 @@ namespace GameProject {
             base.Draw(gameTime);
         }
 
+        /// <summary>
+        /// Outputs a Z dolly value.
+        /// Let's say you want a layer with a depth of 2 to be drawn at a scale of 0.5.
+        /// You'd call this function with 0.5 as the zoom parameter and 2 as the target depth parameter:
+        ///
+        /// GetDepthFromZoom(0.5, 2);
+        ///
+        /// The result would be 4. In other words, you'd have to set the camera's depth to 4.
+        /// <seealso cref="DepthToZoom(float, float)"/>
+        /// </summary>
+        private float ZoomToDepth(float zoom, float targetDepth) {
+            return 1 / zoom + targetDepth;
+        }
+        /// <summary>
+        /// Outputs a zoom value.
+        /// This is the sister function to GetDepthFromZoom.
+        /// Finds a layer's zoom value relative to an other layer.
+        /// <seealso cref="ZoomToDepth(float, float)"/>
+        /// </summary>
+        private float DepthToZoom(float depth, float targetDepth) {
+            if (depth - targetDepth == 0) {
+                return 0;
+            }
+            return 1 / (depth - targetDepth);
+        }
+        private float LinearToDepth(float linear) {
+            return linear * linear;
+        }
+        private float DepthToLinear(float depth) {
+            return (float)Math.Sqrt(depth);
+        }
+
         GraphicsDeviceManager _graphics;
         SpriteBatch _s;
         Texture2D _pixel;
         Effect _grid;
         Camera _camera;
         Canvas _canvas;
-        bool _play = true;
+        bool _play = false;
+
+        float _depth = 1;
+        float _linear = 1;
 
         Vector2 _mouseWorld = Vector2.Zero;
+        Vector2 _mouseAnchor = Vector2.Zero;
 
         ConditionComposite _playInteraction =
             new ConditionComposite(
