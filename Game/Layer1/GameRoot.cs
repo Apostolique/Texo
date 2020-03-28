@@ -82,7 +82,7 @@ namespace GameProject {
 
             float scale = 1f;
             Vector2 size = new Vector2(_pixel.Width, _pixel.Height);
-            Vector2 posOffset = new Vector2(50, 50);
+            Vector2 posOffset = new Vector2(0, 0);
 
             Matrix m =
                 Matrix.CreateScale(scale) *
