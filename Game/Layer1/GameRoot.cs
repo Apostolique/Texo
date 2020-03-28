@@ -74,16 +74,10 @@ namespace GameProject {
             if (_drag.Pressed()) {
                 _mouseAnchor = _mouseWorld;
             }
-            if (_drag.HeldOnly()) {
+            if (_drag.Held()) {
                 _camera.Pos += _mouseAnchor - _mouseWorld;
-            }
-
-            if (_play) {
+            } else if (_play) {
                 _camera.X += 300 * gameTime.GetElapsedSeconds();
-
-                if (_camera.X > 1000) {
-                    _camera.X = -1000;
-                }
             }
 
             float scale = 1f;
