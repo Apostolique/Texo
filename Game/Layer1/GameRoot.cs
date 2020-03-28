@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using Dcrew.MonoGame._2D_Camera;
 using Apos.Input;
+using System;
 
 namespace GameProject {
     public class GameRoot : Game {
@@ -17,12 +18,16 @@ namespace GameProject {
         }
 
         protected override void Initialize() {
-            // TODO: Add your initialization logic here
             Window.AllowUserResizing = true;
+            Window.ClientSizeChanged += WindowSizeChanged;
 
             InputHelper.Setup(this);
 
             base.Initialize();
+        }
+
+        private void WindowSizeChanged(object sender, EventArgs e) {
+            _grid.Parameters["ViewportSize"].SetValue(new Vector2(Window.ClientBounds.Width, Window.ClientBounds.Height));
         }
 
         protected override void LoadContent() {
@@ -30,6 +35,14 @@ namespace GameProject {
 
             _camera = new Camera(new Vector2(0, 0), 0, Vector2.One);
             _canvas = new Canvas();
+
+            _pixel = Content.Load<Texture2D>("Pixel");
+
+            _grid = Content.Load<Effect>("Grid");
+            _grid.Parameters["BackgroundColor"].SetValue(new Color(10, 10, 10).ToVector4());
+            _grid.Parameters["GridColor"].SetValue(new Color(50, 50, 50).ToVector4());
+            _grid.Parameters["GridSize"].SetValue(new Vector2(200, 200));
+            _grid.Parameters["LineSize"].SetValue(new Vector2(4, 4));
         }
 
         protected override void Update(GameTime gameTime) {
@@ -50,6 +63,20 @@ namespace GameProject {
                 }
             }
 
+            float scale = 1f;
+            Vector2 size = new Vector2(_pixel.Width, _pixel.Height);
+            Vector2 posOffset = new Vector2(50, 50);
+
+            Matrix m =
+                Matrix.CreateScale(scale) *
+                Matrix.CreateScale(size.X, size.Y, 1) *
+                Matrix.CreateTranslation(posOffset.X, posOffset.Y, 1) *
+                _camera.View *
+                Matrix.CreateScale(1f / size.X, 1f / size.Y, 1);
+
+            _grid.Parameters["ScrollMatrix"].SetValue(Matrix.Invert(m));
+            _grid.Parameters["ViewportSize"].SetValue(new Vector2(Window.ClientBounds.Width, Window.ClientBounds.Height));
+
             InputHelper.UpdateCleanup();
             base.Update(gameTime);
         }
@@ -57,7 +84,10 @@ namespace GameProject {
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here
+            _s.Begin(samplerState: SamplerState.LinearWrap, effect: _grid);
+            _s.Draw(_pixel, Vector2.Zero, _s.GraphicsDevice.Viewport.Bounds, Color.Red);
+            _s.End();
+
             _s.Begin(transformMatrix: _camera.View);
             _canvas.Draw(_s);
             _s.End();
@@ -67,6 +97,8 @@ namespace GameProject {
 
         GraphicsDeviceManager _graphics;
         SpriteBatch _s;
+        Texture2D _pixel;
+        Effect _grid;
         Camera _camera;
         Canvas _canvas;
         bool _play = true;
