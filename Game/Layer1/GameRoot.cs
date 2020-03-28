@@ -33,14 +33,14 @@ namespace GameProject {
         protected override void LoadContent() {
             _s = new SpriteBatch(GraphicsDevice);
 
-            _camera = new Camera(new Vector2(0, 0), 0, Vector2.One);
+            _camera = new Camera(new Vector2(0, 0), 0, new Vector2(1, 1));
             _canvas = new Canvas();
 
             _pixel = Content.Load<Texture2D>("Pixel");
 
             _grid = Content.Load<Effect>("Grid");
             _grid.Parameters["BackgroundColor"].SetValue(new Color(10, 10, 10).ToVector4());
-            _grid.Parameters["GridColor"].SetValue(new Color(50, 50, 50).ToVector4());
+            _grid.Parameters["GridColor"].SetValue(new Color(30, 30, 30).ToVector4());
             _grid.Parameters["GridSize"].SetValue(new Vector2(200, 200));
             _grid.Parameters["LineSize"].SetValue(new Vector2(4, 4));
         }
@@ -53,6 +53,12 @@ namespace GameProject {
 
             if (_playInteraction.Pressed()) {
                 _play = !_play;
+            }
+            if (_rotateLeft.Pressed()) {
+                _camera.Angle += MathHelper.PiOver4;
+            }
+            if (_rotateRight.Pressed()) {
+                _camera.Angle -= MathHelper.PiOver4;
             }
 
             if (_play) {
@@ -107,6 +113,15 @@ namespace GameProject {
             new ConditionComposite(
                 new ConditionSet(new ConditionKeyboard(Keys.Space)),
                 new ConditionSet(new ConditionGamePad(GamePadButton.A, 0))
+            );
+
+        ConditionComposite _rotateLeft =
+            new ConditionComposite(
+                new ConditionSet(new ConditionKeyboard(Keys.OemComma))
+            );
+        ConditionComposite _rotateRight =
+            new ConditionComposite(
+                new ConditionSet(new ConditionKeyboard(Keys.OemPeriod))
             );
     }
 }
