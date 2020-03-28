@@ -37,10 +37,10 @@ namespace GameProject {
             }
 
             foreach (var n in Quadtree<Note>.Nodes)
-                s.DrawRectangle(n, Color.White);
+                s.DrawRectangle(n, Color.White, 4);
 
             foreach (var e in Quadtree<Note>.Items)
-                s.DrawLine(e.Item.AABB.Center.ToVector2(), e.Node.Center.ToVector2(), Color.White * .5f);
+                s.DrawLine(e.Item.AABB.Center.ToVector2(), e.Node.Center.ToVector2(), Color.White * .5f, 4);
         }
     }
 }
