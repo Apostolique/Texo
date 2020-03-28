@@ -29,6 +29,9 @@ namespace GameProject {
 
             Quadtree<Note>.Add(new Note(400, 400, 100, 30));
             Quadtree<Note>.Add(new Note(600, 400, 100, 30));
+
+            Quadtree<Note>.Add(new Note(800, -200, 100, 30));
+            Quadtree<Note>.Add(new Note(1500, -1000, 100, 30));
         }
 
         public void Draw(SpriteBatch s) {
@@ -37,7 +40,7 @@ namespace GameProject {
             }
 
             foreach (var n in Quadtree<Note>.Nodes)
-                s.DrawRectangle(n, Color.White, 4);
+                s.DrawRectangle(n, Color.White * 0.2f, 4);
 
             foreach (var e in Quadtree<Note>.Items)
                 s.DrawLine(e.Item.AABB.Center.ToVector2(), e.Node.Center.ToVector2(), Color.White * .5f, 4);
