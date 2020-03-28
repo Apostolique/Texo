@@ -48,7 +48,7 @@ namespace GameProject {
         protected override void Update(GameTime gameTime) {
             InputHelper.UpdateSetup();
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (_quit.Pressed())
                 Exit();
 
             if (_playInteraction.Pressed()) {
@@ -109,6 +109,8 @@ namespace GameProject {
         Canvas _canvas;
         bool _play = true;
 
+        Vector2 _mouseWorld = Vector2.Zero;
+
         ConditionComposite _playInteraction =
             new ConditionComposite(
                 new ConditionSet(new ConditionKeyboard(Keys.Space)),
@@ -122,6 +124,17 @@ namespace GameProject {
         ConditionComposite _rotateRight =
             new ConditionComposite(
                 new ConditionSet(new ConditionKeyboard(Keys.OemPeriod))
+            );
+
+        ConditionComposite _drag =
+            new ConditionComposite(
+                new ConditionSet(new ConditionMouse(MouseButton.LeftButton))
+            );
+
+        ConditionComposite _quit =
+            new ConditionComposite(
+                new ConditionSet(new ConditionKeyboard(Keys.Escape)),
+                new ConditionSet(new ConditionGamePad(GamePadButton.Back, 0))
             );
     }
 }
