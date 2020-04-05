@@ -41,9 +41,18 @@ namespace GameProject {
         public void Update(GameTime gameTime) {
             // TODO: Figure out the order that things need to be. Right now we need to invalidate the mouse cache multiple times.
 
+            if (!_isSelecting && Triggers.CreateNote.Pressed()) {
+                _currentMode = Modes.grab;
+                _grabAnchor = Core.MouseWorld;
+
+                Note newNote = new Note((int)Core.MouseWorld.X, (int)Core.MouseWorld.Y, 100, 30);
+                Quadtree<Note>.Add(newNote);
+
+                _selectedNotes.Clear();
+                _selectedNotes.Add(newNote);
+            }
             if (!_isSelecting && Triggers.Grab.Pressed()) {
                 _currentMode = Modes.grab;
-
                 _grabAnchor = Core.MouseWorld;
             }
             if (_currentMode == Modes.grab && Triggers.GrabConfirm.Pressed()) {

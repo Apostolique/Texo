@@ -20,7 +20,7 @@ namespace GameProject {
 
         public static ConditionComposite CameraDrag =
             new ConditionComposite(
-                new ConditionSet(new ConditionMouse(MouseButton.RightButton))
+                new ConditionSet(new ConditionMouse(MouseButton.MiddleButton))
             );
 
         public static ConditionComposite SelectionDrag =
@@ -52,6 +52,11 @@ namespace GameProject {
         public static ConditionComposite GrabCancel =
             new ConditionComposite(
                 new ConditionSet(new ConditionMouse(MouseButton.LeftButton))
+            );
+
+        public static ConditionComposite CreateNote =
+            new ConditionComposite(
+                new ConditionSet(new ConditionKeyboard(Keys.A), new ConditionKeyboard(Keys.LeftShift))
             );
     }
 }
