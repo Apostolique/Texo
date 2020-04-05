@@ -41,7 +41,16 @@ namespace GameProject {
         public void Update(GameTime gameTime) {
             // TODO: Figure out the order that things need to be. Right now we need to invalidate the mouse cache multiple times.
 
-            if (Triggers.ModeSwitch.Pressed()) {
+            if (!_isSelecting && Triggers.Grab.Pressed()) {
+                _currentMode = Modes.grab;
+
+                _grabAnchor = Core.MouseWorld;
+            }
+            if (_currentMode == Modes.grab && Triggers.GrabConfirm.Pressed()) {
+                _currentMode = Modes.selection;
+            }
+            if (_currentMode == Modes.grab && Triggers.GrabCancel.Pressed()) {
+                _currentMode = Modes.selection;
             }
 
             if (Triggers.PlayInteraction.Pressed()) {
@@ -106,6 +115,13 @@ namespace GameProject {
 
                     _isSelecting = false;
                 }
+            } else if (_currentMode == Modes.grab) {
+                Point diff = (_grabAnchor - Core.MouseWorld).ToPoint();
+                foreach (var n in _selectedNotes) {
+                    n.Position -= diff;
+                    Quadtree<Note>.Update(n);
+                }
+                _grabAnchor = Core.MouseWorld;
             }
         }
 
@@ -135,6 +151,7 @@ namespace GameProject {
 
         enum Modes {
             selection,
+            grab,
         }
 
         Modes _currentMode = Modes.selection;
@@ -142,6 +159,8 @@ namespace GameProject {
 
         Vector2 _mouseAnchor = Vector2.Zero;
         Vector2 _cameraAnchor = Vector2.Zero;
+
+        Vector2 _grabAnchor = Vector2.Zero;
 
         Rectangle _selection = new Rectangle(0, 0, 0, 0);
         Vector2 _selectionStart = Vector2.Zero;

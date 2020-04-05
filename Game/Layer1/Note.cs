@@ -9,6 +9,13 @@ namespace GameProject {
             _note = new Rectangle(x, y, width, height);
         }
 
+        public Point Position {
+            get => _note.Location;
+            set {
+                _note.Location = value;
+            }
+        }
+
         public void Draw(SpriteBatch s, Color c) {
             s.FillRectangle(_note, c);
         }

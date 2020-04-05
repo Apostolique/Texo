@@ -27,10 +27,31 @@ namespace GameProject {
             new ConditionComposite(
                 new ConditionSet(new ConditionMouse(MouseButton.LeftButton))
             );
+        public static ConditionComposite SelectionDragAdd =
+            new ConditionComposite(
+                new ConditionSet(new ConditionMouse(MouseButton.LeftButton), new ConditionKeyboard(Keys.LeftShift))
+            );
+        public static ConditionComposite SelectionDragExclude =
+            new ConditionComposite(
+                new ConditionSet(new ConditionMouse(MouseButton.LeftButton), new ConditionKeyboard(Keys.LeftControl))
+            );
 
         public static ConditionComposite ModeSwitch =
             new ConditionComposite(
                 new ConditionSet(new ConditionMouse(MouseButton.MiddleButton))
+            );
+
+        public static ConditionComposite Grab =
+            new ConditionComposite(
+                new ConditionSet(new ConditionKeyboard(Keys.G))
+            );
+        public static ConditionComposite GrabConfirm =
+            new ConditionComposite(
+                new ConditionSet(new ConditionMouse(MouseButton.LeftButton))
+            );
+        public static ConditionComposite GrabCancel =
+            new ConditionComposite(
+                new ConditionSet(new ConditionMouse(MouseButton.LeftButton))
             );
     }
 }
