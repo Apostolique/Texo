@@ -9,8 +9,8 @@ namespace GameProject {
             _note = new Rectangle(x, y, width, height);
         }
 
-        public void Draw(SpriteBatch s) {
-            s.FillRectangle(_note, Color.White);
+        public void Draw(SpriteBatch s, Color c) {
+            s.FillRectangle(_note, c);
         }
 
         private Rectangle _note;
