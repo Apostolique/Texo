@@ -45,6 +45,15 @@ namespace GameProject {
             _grid.Parameters["GridColor"].SetValue(new Color(30, 30, 30).ToVector4());
             _grid.Parameters["GridSize"].SetValue(new Vector2(200, 200));
             _grid.Parameters["LineSize"].SetValue(new Vector2(4, 4));
+
+            _midi = new Midi();
+        }
+        /// <summary>
+        /// UnloadContent will be called once per game and is the place to unload
+        /// game-specific content.
+        /// </summary>
+        protected override void UnloadContent() {
+            _midi.Dispose();
         }
 
         protected override void Update(GameTime gameTime) {
@@ -52,6 +61,13 @@ namespace GameProject {
 
             if (_quit.Pressed())
                 Exit();
+
+            if (Triggers.DoNote.Pressed()) {
+                _midi.PlayNote(50);
+            }
+            if (Triggers.DoNote.Released()) {
+                _midi.StopNote(50);
+            }
 
             Core.Update();
             _canvas.Update(gameTime);
@@ -99,5 +115,7 @@ namespace GameProject {
                 new ConditionSet(new ConditionKeyboard(Keys.Escape)),
                 new ConditionSet(new ConditionGamePad(GamePadButton.Back, 0))
             );
+
+        Midi _midi;
     }
 }

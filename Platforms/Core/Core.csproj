@@ -19,6 +19,7 @@
     <PackageReference Include="Dcrew.MonoGame.2D_Camera" Version="1.2.2" />
     <PackageReference Include="Dcrew.MonoGame.2D_Spatial_Partition" Version="1.1.0" />
     <PackageReference Include="Apos.Input" Version="0.8.3" />
+    <PackageReference Include="NAudio" Version="1.10.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -62,5 +62,10 @@ namespace GameProject {
             new ConditionComposite(
                 new ConditionSet(new ConditionKeyboard(Keys.A), new ConditionKeyboard(Keys.LeftShift))
             );
+
+        public static ConditionComposite DoNote =
+            new ConditionComposite(
+                new ConditionSet(new ConditionKeyboard(Keys.Enter))
+            );
     }
 }
