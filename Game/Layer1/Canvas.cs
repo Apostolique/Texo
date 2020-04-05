@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Apos.Input;
 using Dcrew.MonoGame._2D_Spatial_Partition;
 using Microsoft.Xna.Framework;
@@ -77,17 +79,39 @@ namespace GameProject {
                     _selectionStart = Core.MouseWorld;
                     _selectionEnd = Core.MouseWorld;
                     _selection = Utility.CreateRect(_selectionStart, _selectionEnd);
+
+                    _isSelecting = true;
                 }
                 if (Triggers.SelectionDrag.Held()) {
                     _selectionEnd = Core.MouseWorld;
                     _selection = Utility.CreateRect(_selectionStart, _selectionEnd);
+                    _selectedNotesTemp.Clear();
+
+                    if (Triggers.SelectionDragAdd.Held()) {
+                        _selectedNotesTemp.UnionWith(_selectedNotes);
+                        _selectedNotesTemp.UnionWith(Quadtree<Note>.Query(_selection));
+                    } else if (Triggers.SelectionDragExclude.Held()) {
+                        _selectedNotesTemp.UnionWith(_selectedNotes);
+                        _selectedNotesTemp.ExceptWith(Quadtree<Note>.Query(_selection));
+                    } else {
+                        _selectedNotesTemp.UnionWith(Quadtree<Note>.Query(_selection));
+                    }
+                }
+                if (Triggers.SelectionDrag.Released()) {
+                    _selectedNotes.Clear();
+                    _selectedNotes.UnionWith(_selectedNotesTemp);
+                    _selectedNotesTemp.Clear();
+
+                    _selection = Utility.CreateRect(Vector2.Zero, Vector2.Zero);
+
+                    _isSelecting = false;
                 }
             }
         }
 
         public void Draw(SpriteBatch s) {
             foreach (var n in Quadtree<Note>.Items) {
-                n.Item.Draw(s);
+                n.Item.Draw(s, Color.White);
             }
 
             foreach (var n in Quadtree<Note>.Nodes)
@@ -96,7 +120,15 @@ namespace GameProject {
             foreach (var e in Quadtree<Note>.Items)
                 s.DrawLine(e.Item.AABB.Center.ToVector2(), e.Node.Center.ToVector2(), Color.White * .5f, 4);
 
-            if (_currentMode == Modes.selection && _selection.Width > 20 && _selection.Height > 20) {
+            if (_isSelecting) {
+                foreach (var n in _selectedNotesTemp)
+                    s.DrawRectangle(n.AABB, Color.Red * 0.8f, 4);
+            } else {
+                foreach (var n in _selectedNotes)
+                    s.DrawRectangle(n.AABB, Color.Red * 0.8f, 4);
+            }
+
+            if (_currentMode == Modes.selection && _selection.Width > 0 && _selection.Height > 0) {
                 s.DrawRectangle(_selection, Color.Red, 4 / Core.Camera.ScreenToWorldScale());
             }
         }
@@ -114,5 +146,9 @@ namespace GameProject {
         Rectangle _selection = new Rectangle(0, 0, 0, 0);
         Vector2 _selectionStart = Vector2.Zero;
         Vector2 _selectionEnd = Vector2.Zero;
+        bool _isSelecting = false;
+
+        HashSet<Note> _selectedNotesTemp = new HashSet<Note>();
+        HashSet<Note> _selectedNotes = new HashSet<Note>();
     }
 }
