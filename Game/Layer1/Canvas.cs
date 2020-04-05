@@ -41,27 +41,6 @@ namespace GameProject {
         public void Update(GameTime gameTime) {
             // TODO: Figure out the order that things need to be. Right now we need to invalidate the mouse cache multiple times.
 
-            if (!_isSelecting && Triggers.CreateNote.Pressed()) {
-                _currentMode = Modes.grab;
-                _grabAnchor = Core.MouseWorld;
-
-                Note newNote = new Note((int)Core.MouseWorld.X, (int)Core.MouseWorld.Y, 100, 30);
-                Quadtree<Note>.Add(newNote);
-
-                _selectedNotes.Clear();
-                _selectedNotes.Add(newNote);
-            }
-            if (!_isSelecting && Triggers.Grab.Pressed()) {
-                _currentMode = Modes.grab;
-                _grabAnchor = Core.MouseWorld;
-            }
-            if (_currentMode == Modes.grab && Triggers.GrabConfirm.Pressed()) {
-                _currentMode = Modes.selection;
-            }
-            if (_currentMode == Modes.grab && Triggers.GrabCancel.Pressed()) {
-                _currentMode = Modes.selection;
-            }
-
             if (Triggers.PlayInteraction.Pressed()) {
                 _play = !_play;
             }
@@ -103,7 +82,7 @@ namespace GameProject {
 
                     _isSelecting = true;
                 }
-                if (Triggers.SelectionDrag.Held()) {
+                if (_isSelecting && Triggers.SelectionDrag.Held()) {
                     _selectionEnd = Core.MouseWorld;
                     _selection = Utility.CreateRect(_selectionStart, _selectionEnd);
                     _selectedNotesTemp.Clear();
@@ -118,7 +97,7 @@ namespace GameProject {
                         _selectedNotesTemp.UnionWith(Quadtree<Note>.Query(_selection));
                     }
                 }
-                if (Triggers.SelectionDrag.Released()) {
+                if (_isSelecting && Triggers.SelectionDrag.Released()) {
                     _selectedNotes.Clear();
                     _selectedNotes.UnionWith(_selectedNotesTemp);
                     _selectedNotesTemp.Clear();
@@ -127,7 +106,29 @@ namespace GameProject {
 
                     _isSelecting = false;
                 }
+
+                if (!_isSelecting && Triggers.CreateNote.Pressed()) {
+                    _currentMode = Modes.grab;
+                    _grabAnchor = Core.MouseWorld;
+
+                    Note newNote = new Note((int)Core.MouseWorld.X, (int)Core.MouseWorld.Y, 100, 30);
+                    Quadtree<Note>.Add(newNote);
+
+                    _selectedNotes.Clear();
+                    _selectedNotes.Add(newNote);
+                }
+                if (!_isSelecting && Triggers.Grab.Pressed()) {
+                    _currentMode = Modes.grab;
+                    _grabAnchor = Core.MouseWorld;
+                }
             } else if (_currentMode == Modes.grab) {
+                if (Triggers.GrabConfirm.Pressed()) {
+                    _currentMode = Modes.selection;
+                }
+                if (Triggers.GrabCancel.Pressed()) {
+                    _currentMode = Modes.selection;
+                }
+
                 Point diff = (_grabAnchor - Core.MouseWorld).ToPoint();
                 foreach (var n in _selectedNotes) {
                     n.Position -= diff;
