@@ -147,9 +147,8 @@ namespace GameProject {
         }
 
         public void Draw(SpriteBatch s) {
-            foreach (var n in Quadtree<Note>.Items) {
-                n.Item.Draw(s, Color.White);
-            }
+            foreach (var n in Quadtree<Note>.Query(Quadtree<Note>.Bounds))
+                n.Draw(s, Color.White);
 
             foreach (var n in Quadtree<Note>.Nodes)
                 s.DrawRectangle(n, Color.White * 0.2f, 4);
