@@ -23,7 +23,7 @@ namespace GameProject {
                 new ConditionSet(new ConditionMouse(MouseButton.MiddleButton))
             );
 
-        public static ConditionComposite SelectAll =
+        public static ConditionComposite ToggleSelectAll =
             new ConditionComposite(
                 new ConditionSet(new ConditionKeyboard(Keys.A))
             );
