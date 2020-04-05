@@ -110,6 +110,7 @@ namespace GameProject {
                 if (!_isSelecting && Triggers.CreateNote.Pressed()) {
                     _currentMode = Modes.grab;
                     _grabAnchor = Core.MouseWorld;
+                    _grabAnchorInitial = Core.MouseWorld;
 
                     Note newNote = new Note((int)Core.MouseWorld.X, (int)Core.MouseWorld.Y, 100, 30);
                     Quadtree<Note>.Add(newNote);
@@ -120,18 +121,21 @@ namespace GameProject {
                 if (!_isSelecting && Triggers.Grab.Pressed()) {
                     _currentMode = Modes.grab;
                     _grabAnchor = Core.MouseWorld;
+                    _grabAnchorInitial = Core.MouseWorld;
                 }
             } else if (_currentMode == Modes.grab) {
+                Point diff = (Core.MouseWorld - _grabAnchor).ToPoint();
+
                 if (Triggers.GrabConfirm.Pressed()) {
                     _currentMode = Modes.selection;
                 }
                 if (Triggers.GrabCancel.Pressed()) {
                     _currentMode = Modes.selection;
+                    diff = (_grabAnchorInitial - _grabAnchor).ToPoint();
                 }
 
-                Point diff = (_grabAnchor - Core.MouseWorld).ToPoint();
                 foreach (var n in _selectedNotes) {
-                    n.Position -= diff;
+                    n.Position += diff;
                     Quadtree<Note>.Update(n);
                 }
                 _grabAnchor = Core.MouseWorld;
@@ -173,6 +177,7 @@ namespace GameProject {
         Vector2 _mouseAnchor = Vector2.Zero;
         Vector2 _cameraAnchor = Vector2.Zero;
 
+        Vector2 _grabAnchorInitial = Vector2.Zero;
         Vector2 _grabAnchor = Vector2.Zero;
 
         Rectangle _selection = new Rectangle(0, 0, 0, 0);
