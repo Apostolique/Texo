@@ -93,6 +93,9 @@ namespace GameProject {
             Core.Update();
 
             if (_currentMode == Modes.selection) {
+                if (Triggers.SelectAll.Pressed()) {
+                    _selectedNotes.UnionWith(Quadtree<Note>.Query(Quadtree<Note>.Bounds));
+                }
                 if (Triggers.SelectionDrag.Pressed()) {
                     _selectionStart = Core.MouseWorld;
                     _selectionEnd = Core.MouseWorld;

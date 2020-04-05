@@ -23,6 +23,10 @@ namespace GameProject {
                 new ConditionSet(new ConditionMouse(MouseButton.MiddleButton))
             );
 
+        public static ConditionComposite SelectAll =
+            new ConditionComposite(
+                new ConditionSet(new ConditionKeyboard(Keys.A), new ConditionKeyboard(Keys.LeftControl))
+            );
         public static ConditionComposite SelectionDrag =
             new ConditionComposite(
                 new ConditionSet(new ConditionMouse(MouseButton.LeftButton))
