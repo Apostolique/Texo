@@ -10,10 +10,10 @@ using MonoGame.Extended;
 namespace GameProject {
     public class Canvas {
         public Canvas() {
-            Quadtree<Note>.Add(new Note(0, 0, 100, 30));
+            Quadtree<Note>.Add(new Note(50, 0, 100, 30));
             Quadtree<Note>.Add(new Note(200, 0, 100, 30));
 
-            Quadtree<Note>.Add(new Note(0, 100, 100, 30));
+            Quadtree<Note>.Add(new Note(50, 100, 100, 30));
             Quadtree<Note>.Add(new Note(200, 100, 100, 30));
 
             Quadtree<Note>.Add(new Note(400, 0, 100, 30));
@@ -22,10 +22,10 @@ namespace GameProject {
             Quadtree<Note>.Add(new Note(400, 100, 100, 30));
             Quadtree<Note>.Add(new Note(600, 100, 100, 30));
 
-            Quadtree<Note>.Add(new Note(0, 200, 100, 30));
+            Quadtree<Note>.Add(new Note(50, 200, 100, 30));
             Quadtree<Note>.Add(new Note(200, 200, 100, 30));
 
-            Quadtree<Note>.Add(new Note(0, 400, 100, 30));
+            Quadtree<Note>.Add(new Note(50, 400, 100, 30));
             Quadtree<Note>.Add(new Note(200, 400, 100, 30));
 
             Quadtree<Note>.Add(new Note(400, 200, 100, 30));
@@ -40,9 +40,12 @@ namespace GameProject {
 
         public void Update(GameTime gameTime) {
             // TODO: Figure out the order that things need to be. Right now we need to invalidate the mouse cache multiple times.
-
             if (Triggers.PlayInteraction.Pressed()) {
                 _play = !_play;
+
+                if (!_play) {
+                    Core.Midi.StopAll();
+                }
             }
             if (Triggers.RotateLeft.Pressed()) {
                 Core.Camera.Angle += MathHelper.PiOver4;
@@ -65,8 +68,25 @@ namespace GameProject {
             }
             if (Triggers.CameraDrag.Held()) {
                 Core.Camera.Pos += _mouseAnchor - Core.MouseWorld;
+                _playheadNew = Core.Camera.X;
             } else if (_play) {
-                Core.Camera.Pos += new Vector2(300 * gameTime.GetElapsedSeconds(), 0);
+                Core.Camera.X += 300 * gameTime.GetElapsedSeconds();
+
+                _playheadOld = _playheadNew;
+                _playheadNew = Core.Camera.X;
+
+                foreach (Note n in Quadtree<Note>.Query(Quadtree<Note>.Bounds)) {
+                    if (_playheadOld < n.Start && _playheadNew > n.Start) {
+                        Core.Midi.PlayNote(40);
+                    }
+                    if (_playheadOld < n.End && _playheadNew > n.End) {
+                        Core.Midi.StopNote(40);
+                    }
+                }
+
+                if (Core.Camera.X > 2000) {
+                    Core.Camera.X = 0;
+                }
             }
 
             Core.Update();
@@ -167,6 +187,8 @@ namespace GameProject {
             if (_currentMode == Modes.selection && _selection.Width > 0 && _selection.Height > 0) {
                 s.DrawRectangle(_selection, Color.Red, 4 / Core.Camera.ScreenToWorldScale());
             }
+
+            s.DrawLine(_playheadNew, 3000, _playheadNew, -3000, Color.Green, 8);
         }
 
         enum Modes {
@@ -190,5 +212,8 @@ namespace GameProject {
 
         HashSet<Note> _selectedNotesTemp = new HashSet<Note>();
         HashSet<Note> _selectedNotes = new HashSet<Note>();
+
+        float _playheadOld = 0;
+        float _playheadNew = 0;
     }
 }

@@ -9,6 +9,8 @@ namespace GameProject {
         public static Camera Camera;
         public static Vector2 MouseWorld = Vector2.Zero;
 
+        public static Midi Midi;
+
         public static float Depth = 1;
         public static float Linear = 1;
 

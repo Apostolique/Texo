@@ -16,6 +16,9 @@ namespace GameProject {
             }
         }
 
+        public int Start => _note.Left;
+        public int End => _note.Right;
+
         public void Draw(SpriteBatch s, Color c) {
             s.FillRectangle(_note, c);
         }
