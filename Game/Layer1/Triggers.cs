@@ -25,7 +25,7 @@ namespace GameProject {
 
         public static ConditionComposite SelectAll =
             new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.A), new ConditionKeyboard(Keys.LeftControl))
+                new ConditionSet(new ConditionKeyboard(Keys.A))
             );
         public static ConditionComposite SelectionDrag =
             new ConditionComposite(
