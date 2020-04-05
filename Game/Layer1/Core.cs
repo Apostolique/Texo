@@ -8,7 +8,6 @@ namespace GameProject {
         public static GameWindow Window;
         public static Camera Camera;
         public static Vector2 MouseWorld = Vector2.Zero;
-        public static Vector2 MouseAnchor = Vector2.Zero;
 
         public static float Depth = 1;
         public static float Linear = 1;
@@ -52,12 +51,6 @@ namespace GameProject {
         }
         public static float DepthToLinear(float depth) {
             return (float)Math.Sqrt(depth);
-        }
-
-        public static T Clamp<T>(this T val, T min, T max)where T : IComparable<T> {
-            if (val.CompareTo(min) < 0)return min;
-            else if (val.CompareTo(max) > 0)return max;
-            else return val;
         }
     }
 }

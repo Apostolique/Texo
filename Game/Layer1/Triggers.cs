@@ -18,9 +18,19 @@ namespace GameProject {
                 new ConditionSet(new ConditionKeyboard(Keys.OemPeriod))
             );
 
-        public static ConditionComposite Drag =
+        public static ConditionComposite CameraDrag =
+            new ConditionComposite(
+                new ConditionSet(new ConditionMouse(MouseButton.RightButton))
+            );
+
+        public static ConditionComposite SelectionDrag =
             new ConditionComposite(
                 new ConditionSet(new ConditionMouse(MouseButton.LeftButton))
+            );
+
+        public static ConditionComposite ModeSwitch =
+            new ConditionComposite(
+                new ConditionSet(new ConditionMouse(MouseButton.MiddleButton))
             );
     }
 }
