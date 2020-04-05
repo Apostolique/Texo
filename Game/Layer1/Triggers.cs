@@ -55,7 +55,7 @@ namespace GameProject {
             );
         public static ConditionComposite GrabCancel =
             new ConditionComposite(
-                new ConditionSet(new ConditionMouse(MouseButton.LeftButton))
+                new ConditionSet(new ConditionMouse(MouseButton.RightButton))
             );
 
         public static ConditionComposite CreateNote =
