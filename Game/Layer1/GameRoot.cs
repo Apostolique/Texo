@@ -10,10 +10,12 @@ namespace GameProject {
     public class GameRoot : Game {
         public GameRoot() {
             _graphics = new GraphicsDeviceManager(this);
+            _graphics.PreferredBackBufferWidth = 1700;
+            _graphics.PreferredBackBufferHeight = 900;
             IsMouseVisible = true;
             Content.RootDirectory = "Content";
 
-            IsFixedTimeStep = false;
+            IsFixedTimeStep = true;
             _graphics.SynchronizeWithVerticalRetrace = false;
         }
 
@@ -33,7 +35,7 @@ namespace GameProject {
         protected override void LoadContent() {
             _s = new SpriteBatch(GraphicsDevice);
 
-            _camera = new Camera(new Vector2(0, 0), 0, new Vector2(_depth));
+            Core.Setup(this);
             _canvas = new Canvas();
 
             _pixel = Content.Load<Texture2D>("Pixel");
@@ -51,34 +53,8 @@ namespace GameProject {
             if (_quit.Pressed())
                 Exit();
 
-            if (_playInteraction.Pressed()) {
-                _play = !_play;
-            }
-            if (_rotateLeft.Pressed()) {
-                _camera.Angle += MathHelper.PiOver4;
-            }
-            if (_rotateRight.Pressed()) {
-                _camera.Angle -= MathHelper.PiOver4;
-            }
-            if (InputHelper.NewMouse.ScrollWheelValue - InputHelper.OldMouse.ScrollWheelValue != 0) {
-                var diff = InputHelper.NewMouse.ScrollWheelValue - InputHelper.OldMouse.ScrollWheelValue;
-                // TODO: The diff multiplier should be a setting.
-                _linear = Math.Max(_linear - diff * 0.0005f, 0.1f);
-                _depth = LinearToDepth(_linear);
-                _camera.Scale = new Vector2(DepthToZoom(_depth, 0));
-            }
-
-            _camera.UpdateMousePos(InputHelper.NewMouse);
-            _mouseWorld = _camera.MousePos;
-
-            if (_drag.Pressed()) {
-                _mouseAnchor = _mouseWorld;
-            }
-            if (_drag.Held()) {
-                _camera.Pos += _mouseAnchor - _mouseWorld;
-            } else if (_play) {
-                _camera.X += 300 * gameTime.GetElapsedSeconds();
-            }
+            Core.Update();
+            _canvas.Update(gameTime);
 
             float scale = 1f;
             Vector2 size = new Vector2(_pixel.Width, _pixel.Height);
@@ -88,7 +64,7 @@ namespace GameProject {
                 Matrix.CreateScale(scale) *
                 Matrix.CreateScale(size.X, size.Y, 1) *
                 Matrix.CreateTranslation(posOffset.X, posOffset.Y, 1) *
-                _camera.View *
+                Core.Camera.View *
                 Matrix.CreateScale(1f / size.X, 1f / size.Y, 1);
 
             _grid.Parameters["ScrollMatrix"].SetValue(Matrix.Invert(m));
@@ -105,78 +81,18 @@ namespace GameProject {
             _s.Draw(_pixel, Vector2.Zero, _s.GraphicsDevice.Viewport.Bounds, Color.Red);
             _s.End();
 
-            _s.Begin(transformMatrix: _camera.View);
+            _s.Begin(transformMatrix: Core.Camera.View);
             _canvas.Draw(_s);
             _s.End();
 
             base.Draw(gameTime);
         }
 
-        /// <summary>
-        /// Outputs a Z dolly value.
-        /// Let's say you want a layer with a depth of 2 to be drawn at a scale of 0.5.
-        /// You'd call this function with 0.5 as the zoom parameter and 2 as the target depth parameter:
-        ///
-        /// GetDepthFromZoom(0.5, 2);
-        ///
-        /// The result would be 4. In other words, you'd have to set the camera's depth to 4.
-        /// <seealso cref="DepthToZoom(float, float)"/>
-        /// </summary>
-        private float ZoomToDepth(float zoom, float targetDepth) {
-            return 1 / zoom + targetDepth;
-        }
-        /// <summary>
-        /// Outputs a zoom value.
-        /// This is the sister function to GetDepthFromZoom.
-        /// Finds a layer's zoom value relative to an other layer.
-        /// <seealso cref="ZoomToDepth(float, float)"/>
-        /// </summary>
-        private float DepthToZoom(float depth, float targetDepth) {
-            if (depth - targetDepth == 0) {
-                return 0;
-            }
-            return 1 / (depth - targetDepth);
-        }
-        private float LinearToDepth(float linear) {
-            return linear * linear;
-        }
-        private float DepthToLinear(float depth) {
-            return (float)Math.Sqrt(depth);
-        }
-
         GraphicsDeviceManager _graphics;
         SpriteBatch _s;
         Texture2D _pixel;
         Effect _grid;
-        Camera _camera;
         Canvas _canvas;
-        bool _play = false;
-
-        float _depth = 1;
-        float _linear = 1;
-
-        Vector2 _mouseWorld = Vector2.Zero;
-        Vector2 _mouseAnchor = Vector2.Zero;
-
-        ConditionComposite _playInteraction =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.Space)),
-                new ConditionSet(new ConditionGamePad(GamePadButton.A, 0))
-            );
-
-        ConditionComposite _rotateLeft =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.OemComma))
-            );
-        ConditionComposite _rotateRight =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.OemPeriod))
-            );
-
-        ConditionComposite _drag =
-            new ConditionComposite(
-                new ConditionSet(new ConditionMouse(MouseButton.LeftButton))
-            );
 
         ConditionComposite _quit =
             new ConditionComposite(
