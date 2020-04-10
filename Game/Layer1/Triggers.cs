@@ -67,5 +67,23 @@ namespace GameProject {
             new ConditionComposite(
                 new ConditionSet(new ConditionKeyboard(Keys.Enter))
             );
+
+        public static ConditionComposite RemoveStart =
+            new ConditionComposite(
+                new ConditionSet(new ConditionKeyboard(Keys.F5))
+            );
+        public static ConditionComposite AddStart =
+            new ConditionComposite(
+                new ConditionSet(new ConditionKeyboard(Keys.F6))
+            );
+
+        public static ConditionComposite RemoveEnd =
+            new ConditionComposite(
+                new ConditionSet(new ConditionKeyboard(Keys.F7))
+            );
+        public static ConditionComposite AddEnd =
+            new ConditionComposite(
+                new ConditionSet(new ConditionKeyboard(Keys.F8))
+            );
     }
 }

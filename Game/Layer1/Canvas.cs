@@ -156,12 +156,31 @@ namespace GameProject {
                 }
                 _grabAnchor = Core.MouseWorld;
             }
+
+            if (Triggers.RemoveStart.Pressed()) {
+                _pianoStart--;
+                _pianoRoll = new PianoRoll(_pianoStart, _pianoEnd);
+            }
+            if (Triggers.AddStart.Pressed()) {
+                _pianoStart++;
+                _pianoRoll = new PianoRoll(_pianoStart, _pianoEnd);
+            }
+            if (Triggers.RemoveEnd.Pressed()) {
+                _pianoEnd--;
+                _pianoRoll = new PianoRoll(_pianoStart, _pianoEnd);
+            }
+            if (Triggers.AddEnd.Pressed()) {
+                _pianoEnd++;
+                _pianoRoll = new PianoRoll(_pianoStart, _pianoEnd);
+            }
         }
         public void Update(GameTime gameTime) {
 
         }
 
         public void Draw(SpriteBatch s) {
+            _pianoRoll.Draw(s);
+
             foreach (var n in Quadtree<Note>.Query(Quadtree<Note>.Bounds))
                 n.Draw(s, Color.White);
 
@@ -183,7 +202,7 @@ namespace GameProject {
                 s.DrawRectangle(_selection, Color.Red, 4 / Core.Camera.ScreenToWorldScale());
             }
 
-            s.DrawLine(_playheadNew, 3000, _playheadNew, -3000, Color.Green, 8);
+            //s.DrawLine(_playheadNew, 3000, _playheadNew, -3000, Color.Green, 8);
         }
 
         private void cameraRotate(float dAngle) {
@@ -234,5 +253,9 @@ namespace GameProject {
 
         float _playheadOld = 0;
         float _playheadNew = 0;
+
+        int _pianoStart = 0;
+        int _pianoEnd = 12;
+        PianoRoll _pianoRoll = new PianoRoll(0, 12);
     }
 }
