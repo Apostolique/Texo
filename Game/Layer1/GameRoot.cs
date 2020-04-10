@@ -50,7 +50,7 @@ namespace GameProject {
             _grid.Parameters["BackgroundColor"].SetValue(new Color(10, 10, 10).ToVector4());
             _grid.Parameters["GridColor"].SetValue(new Color(30, 30, 30).ToVector4());
             _grid.Parameters["GridSize"].SetValue(new Vector2(50, Core.NoteHeight));
-            _grid.Parameters["LineSize"].SetValue(new Vector2(2, 2));
+            _grid.Parameters["LineSize"].SetValue(new Vector2(Core.LineSize));
 
             // Possible crash if there are no devices?
             Core.Midi = new Midi(0);

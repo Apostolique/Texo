@@ -12,20 +12,21 @@ namespace GameProject {
         }
 
         public void Draw(SpriteBatch s) {
-            for (int i = _start; i <= _end; i++) {
+            for (int i = _start; i < _end; i++) {
                 var whiteIndex = Utility.Mod(i, _whiteNotes.Length);
-                var octave = (int)MathF.Floor((float)i / _whiteNotes.Length) * _whiteDownCount.Last();
                 if (_whiteNotes[whiteIndex]) {
-                    s.FillRectangle(X, Y - (_whiteDownCount[whiteIndex] + octave) * _whiteHeight, _whiteWidth, _whiteHeight, Color.White);
-                    s.DrawRectangle(X, Y - (_whiteDownCount[whiteIndex] + octave) * _whiteHeight, _whiteWidth, _whiteHeight, Color.Gray, 2);
+                    var octave = (int)MathF.Floor((float)i / _whiteNotes.Length) * 7;
+                    var rect = new RectangleF(X, Y - (_whiteDownCount[whiteIndex] + octave) * _whiteHeight + Core.LineSize / 2, _whiteWidth, _whiteHeight);
+                    s.FillRectangle(rect, Color.White);
+                    s.DrawRectangle(rect, Color.Gray, 2);
                 }
             }
-            for (int i = _start; i <= _end; i++) {
+            for (int i = _start; i < _end; i++) {
                 var blackIndex = Utility.Mod(i, _blackNotes.Length);
-                var octave = (int)MathF.Floor((float)i / _blackNotes.Length) * 12;
                 if (_blackNotes[blackIndex]) {
-                    s.FillRectangle(X, Y - (blackIndex + octave) * Core.NoteHeight - _blackHeight + _blackDiff, _blackWidth, _blackHeight, Color.Black);
-                    s.DrawRectangle(X, Y - (blackIndex + octave) * Core.NoteHeight - _blackHeight + _blackDiff, _blackWidth, _blackHeight, Color.Gray, 2);
+                    var rect = new RectangleF(X, Y - (i + 1) * Core.NoteHeight - _blackDiff + Core.LineSize / 2, _blackWidth, _blackHeight);
+                    s.FillRectangle(rect, Color.Black);
+                    s.DrawRectangle(rect, Color.Gray, 2);
                 }
             }
         }
@@ -34,17 +35,17 @@ namespace GameProject {
         bool[] _whiteNotes = new bool[] {true, false, true, false, true, true, false, true, false, true, false, true};
         bool[] _blackNotes = new bool[] {false, true, false, true, false, false, true, false, true, false, true, false};
 
-        int X = -2000;
+        int X = -1000;
         int Y = 0;
 
         int _start;
         int _end;
 
-        int _whiteWidth = Core.NoteHeight * 10;
-        int _whiteHeight = Core.NoteHeight * 12 / 7;
+        float _whiteWidth = Core.NoteHeight * 10;
+        float _whiteHeight = (Core.NoteHeight * 12) / 7;
 
-        int _blackWidth = Core.NoteHeight * 8;
-        int _blackHeight = (int)(Core.NoteHeight * 12 / 7 * 0.75f);
-        int _blackDiff = (int)((Core.NoteHeight * 12 / 7 * 0.75f) - Core.NoteHeight) / 2;
+        float _blackWidth = Core.NoteHeight * 8;
+        float _blackHeight = Core.NoteHeight * 12 / 7 * 0.75f;
+        float _blackDiff = ((Core.NoteHeight * 12 / 7 * 0.75f) - Core.NoteHeight) / 2;
     }
 }
