@@ -19,7 +19,7 @@ namespace GameProject {
 
             Camera = new Camera(new Vector2(0, 0), 0, new Vector2(Depth));
         }
-        public static void Update() {
+        public static void UpdateMouseWorld() {
             MouseWorld = Camera.ScreenToWorld(InputHelper.NewMouse.X, InputHelper.NewMouse.Y);
         }
 

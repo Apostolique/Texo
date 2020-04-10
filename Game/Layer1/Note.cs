@@ -9,7 +9,7 @@ namespace GameProject {
             _note = new Rectangle(x, y, width, height);
         }
 
-        public Point Position {
+        public Point XY {
             get => _note.Location;
             set {
                 _note.Location = value;

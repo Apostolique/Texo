@@ -48,29 +48,23 @@ namespace GameProject {
                 }
             }
             if (Triggers.RotateLeft.Pressed()) {
-                Core.Camera.Angle += MathHelper.PiOver4;
+                cameraRotate(MathHelper.PiOver4);
             }
             if (Triggers.RotateRight.Pressed()) {
-                Core.Camera.Angle -= MathHelper.PiOver4;
+                cameraRotate(-MathHelper.PiOver4);
             }
             if (InputHelper.NewMouse.ScrollWheelValue - InputHelper.OldMouse.ScrollWheelValue != 0) {
-                var diff = InputHelper.NewMouse.ScrollWheelValue - InputHelper.OldMouse.ScrollWheelValue;
-                // TODO: The diff multiplier should be a setting.
-                Core.Linear = Math.Max(Core.Linear - diff * 0.0005f, 0.1f);
-                Core.Depth = Core.LinearToDepth(Core.Linear);
-                Core.Camera.Scale = new Vector2(Core.DepthToZoom(Core.Depth, 0));
+                cameraScale(InputHelper.NewMouse.ScrollWheelValue - InputHelper.OldMouse.ScrollWheelValue);
             }
-
-            Core.Update();
 
             if (Triggers.CameraDrag.Pressed()) {
                 _mouseAnchor = Core.MouseWorld;
             }
             if (Triggers.CameraDrag.Held()) {
-                Core.Camera.XY += _mouseAnchor - Core.MouseWorld;
+                cameraTranslate(_mouseAnchor - Core.MouseWorld);
                 _playheadNew = Core.Camera.X;
             } else if (_play) {
-                Core.Camera.X += 300 * gameTime.GetElapsedSeconds();
+                cameraTranslate(new Vector2(300 * gameTime.GetElapsedSeconds(), 0));
 
                 _playheadOld = _playheadNew;
                 _playheadNew = Core.Camera.X;
@@ -88,8 +82,6 @@ namespace GameProject {
                     Core.Camera.X = 0;
                 }
             }
-
-            Core.Update();
 
             if (_currentMode == Modes.selection) {
                 if (Triggers.ToggleSelectAll.Pressed()) {
@@ -159,7 +151,7 @@ namespace GameProject {
                 }
 
                 foreach (var n in _selectedNotes) {
-                    n.Position += diff;
+                    n.XY += diff;
                     Quadtree<Note>.Update(n);
                 }
                 _grabAnchor = Core.MouseWorld;
@@ -189,6 +181,30 @@ namespace GameProject {
             }
 
             s.DrawLine(_playheadNew, 3000, _playheadNew, -3000, Color.Green, 8);
+        }
+
+        private void cameraRotate(float dAngle) {
+            Core.Camera.Angle += dAngle;
+
+            Core.UpdateMouseWorld();
+        }
+        private void cameraScale(float dScale) {
+            // TODO: The diff multiplier should be a setting.
+            Core.Linear = Math.Max(Core.Linear - dScale * 0.0005f, 0.1f);
+            Core.Depth = Core.LinearToDepth(Core.Linear);
+            Core.Camera.Scale = new Vector2(Core.DepthToZoom(Core.Depth, 0));
+
+            Core.UpdateMouseWorld();
+        }
+        private void cameraTranslate(Vector2 dXY) {
+            Core.Camera.XY += dXY;
+
+            Core.UpdateMouseWorld();
+        }
+        private void cameraXY(Vector2 XY) {
+            Core.Camera.XY = XY;
+
+            Core.UpdateMouseWorld();
         }
 
         enum Modes {

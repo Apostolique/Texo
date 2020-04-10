@@ -69,7 +69,7 @@ namespace GameProject {
                 Core.Midi.StopNote(50);
             }
 
-            Core.Update();
+            Core.UpdateMouseWorld();
             _canvas.Update(gameTime);
 
             float scale = 1f;
