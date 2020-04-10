@@ -193,7 +193,7 @@ namespace GameProject {
         }
         private void cameraScale(float dScale) {
             // TODO: The diff multiplier should be a setting.
-            Core.Linear = Math.Max(Core.Linear - dScale * 0.0005f, 0.1f);
+            Core.Linear = MathF.Max(Core.Linear - dScale * 0.0005f, 0.1f);
             Core.Depth = Core.LinearToDepth(Core.Linear);
             Core.Camera.Scale = new Vector2(Core.DepthToZoom(Core.Depth, 0));
 

@@ -57,7 +57,7 @@ namespace GameProject {
             return linear * linear;
         }
         public static float DepthToLinear(float depth) {
-            return (float)Math.Sqrt(depth);
+            return MathF.Sqrt(depth);
         }
     }
 }
