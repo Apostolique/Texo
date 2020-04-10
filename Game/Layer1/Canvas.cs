@@ -255,7 +255,7 @@ namespace GameProject {
         float _playheadNew = 0;
 
         int _pianoStart = 0;
-        int _pianoEnd = 12;
-        PianoRoll _pianoRoll = new PianoRoll(0, 12);
+        int _pianoEnd = 36;
+        PianoRoll _pianoRoll = new PianoRoll(0, 36);
     }
 }

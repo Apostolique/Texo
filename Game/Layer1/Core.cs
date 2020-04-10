@@ -18,6 +18,8 @@ namespace GameProject {
         public static float Depth = 1;
         public static float Linear = 1;
 
+        public static int NoteHeight = 20;
+
         public static void Setup(Game game) {
             Game = game;
             Window = game.Window;
