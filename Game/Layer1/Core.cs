@@ -5,9 +5,13 @@ using Microsoft.Xna.Framework;
 
 namespace GameProject {
     public static class Core {
+        public static Game Game;
         public static GameWindow Window;
         public static Camera Camera;
         public static Vector2 MouseWorld = Vector2.Zero;
+
+        public static bool ShowMenu = true;
+        public static Menu Menu;
 
         public static Midi Midi;
 
@@ -15,6 +19,7 @@ namespace GameProject {
         public static float Linear = 1;
 
         public static void Setup(Game game) {
+            Game = game;
             Window = game.Window;
 
             Camera = new Camera(new Vector2(0, 0), 0, new Vector2(Depth));

@@ -5,15 +5,19 @@ using NAudio.Midi;
 
 namespace GameProject {
     public class Midi : IDisposable {
-        public Midi() {
-            //List<string> devices = new List<string>();
-            for (int i = 0; i < MidiOut.NumberOfDevices; i++) {
-                //devices.Add(MidiOut.DeviceInfo(i).ProductName);
-                Console.WriteLine(MidiOut.DeviceInfo(i).ProductName);
-            }
+        public Midi(int deviceIndex) {
+            _selectedDevice = (deviceIndex, MidiOut.DeviceInfo(deviceIndex).ProductName);
+            _midiOut = new MidiOut(deviceIndex);
+        }
 
-            // TODO: Provide a menu to select the midi device.
-            _midiOut = new MidiOut(1);
+        public (int index, string name) Device => _selectedDevice;
+
+        public static IEnumerable<(int index, string name)> Devices {
+            get {
+                for (int i = 0; i < MidiOut.NumberOfDevices; i++) {
+                    yield return (i, MidiOut.DeviceInfo(i).ProductName);
+                }
+            }
         }
 
         public void PlayNote(int noteNumber) {
@@ -52,5 +56,7 @@ namespace GameProject {
         MidiOut _midiOut;
 
         HashSet<NoteOnEvent> _notesOn = new HashSet<NoteOnEvent>();
+
+        (int index, string name) _selectedDevice;
     }
 }

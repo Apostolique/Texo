@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
-using Dcrew.MonoGame._2D_Camera;
 using Apos.Input;
+using Apos.Gui;
 using System;
+using SpriteFontPlus;
+using System.IO;
 
 namespace GameProject {
     public class GameRoot : Game {
@@ -23,8 +24,6 @@ namespace GameProject {
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += WindowSizeChanged;
 
-            InputHelper.Setup(this);
-
             base.Initialize();
         }
 
@@ -34,6 +33,13 @@ namespace GameProject {
 
         protected override void LoadContent() {
             _s = new SpriteBatch(GraphicsDevice);
+
+            using MemoryStream ms = new MemoryStream();
+            TitleContainer.OpenStream($"{Content.RootDirectory}/SourceCodePro-Medium.ttf").CopyTo(ms);
+            byte[] fontBytes = ms.ToArray();
+            _font = DynamicSpriteFont.FromTtf(fontBytes, 30);
+
+            GuiHelper.Setup(this, _font);
 
             Core.Setup(this);
             _canvas = new Canvas();
@@ -46,7 +52,10 @@ namespace GameProject {
             _grid.Parameters["GridSize"].SetValue(new Vector2(200, 200));
             _grid.Parameters["LineSize"].SetValue(new Vector2(4, 4));
 
-            Core.Midi = new Midi();
+            // Possible crash if there are no devices?
+            Core.Midi = new Midi(0);
+
+            Core.Menu = new Menu();
         }
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -57,7 +66,7 @@ namespace GameProject {
         }
 
         protected override void Update(GameTime gameTime) {
-            InputHelper.UpdateSetup();
+            GuiHelper.UpdateSetup();
 
             if (_quit.Pressed())
                 Exit();
@@ -70,7 +79,13 @@ namespace GameProject {
             }
 
             Core.UpdateMouseWorld();
-            _canvas.Update(gameTime);
+            if (Core.ShowMenu) {
+                Core.Menu.UpdateSetup();
+                Core.Menu.UpdateInput();
+                Core.Menu.Update();
+            } else {
+                _canvas.UpdateInput(gameTime);
+            }
 
             float scale = 1f;
             Vector2 size = new Vector2(_pixel.Width, _pixel.Height);
@@ -86,7 +101,7 @@ namespace GameProject {
             _grid.Parameters["ScrollMatrix"].SetValue(Matrix.Invert(m));
             _grid.Parameters["ViewportSize"].SetValue(new Vector2(Window.ClientBounds.Width, Window.ClientBounds.Height));
 
-            InputHelper.UpdateCleanup();
+            GuiHelper.UpdateCleanup();
             base.Update(gameTime);
         }
 
@@ -101,12 +116,17 @@ namespace GameProject {
             _canvas.Draw(_s);
             _s.End();
 
+            if (Core.ShowMenu) {
+                Core.Menu.DrawUI();
+            }
+
             base.Draw(gameTime);
         }
 
         GraphicsDeviceManager _graphics;
         SpriteBatch _s;
         Texture2D _pixel;
+        DynamicSpriteFont _font;
         Effect _grid;
         Canvas _canvas;
 

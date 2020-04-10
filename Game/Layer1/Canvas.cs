@@ -38,7 +38,7 @@ namespace GameProject {
             Quadtree<Note>.Add(new Note(1500, -1000, 100, 30));
         }
 
-        public void Update(GameTime gameTime) {
+        public void UpdateInput(GameTime gameTime) {
             // TODO: Figure out the order that things need to be. Right now we need to invalidate the mouse cache multiple times.
             if (Triggers.PlayInteraction.Pressed()) {
                 _play = !_play;
@@ -156,6 +156,9 @@ namespace GameProject {
                 }
                 _grabAnchor = Core.MouseWorld;
             }
+        }
+        public void Update(GameTime gameTime) {
+
         }
 
         public void Draw(SpriteBatch s) {
