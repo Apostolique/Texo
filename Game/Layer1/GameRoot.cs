@@ -80,7 +80,7 @@ namespace GameProject {
                 Matrix.CreateScale(scale) *
                 Matrix.CreateScale(size.X, size.Y, 1) *
                 Matrix.CreateTranslation(posOffset.X, posOffset.Y, 1) *
-                Core.Camera.View *
+                Core.Camera.View() *
                 Matrix.CreateScale(1f / size.X, 1f / size.Y, 1);
 
             _grid.Parameters["ScrollMatrix"].SetValue(Matrix.Invert(m));
@@ -97,7 +97,7 @@ namespace GameProject {
             _s.Draw(_pixel, Vector2.Zero, _s.GraphicsDevice.Viewport.Bounds, Color.Red);
             _s.End();
 
-            _s.Begin(transformMatrix: Core.Camera.View);
+            _s.Begin(transformMatrix: Core.Camera.View());
             _canvas.Draw(_s);
             _s.End();
 

@@ -67,7 +67,7 @@ namespace GameProject {
                 _mouseAnchor = Core.MouseWorld;
             }
             if (Triggers.CameraDrag.Held()) {
-                Core.Camera.Pos += _mouseAnchor - Core.MouseWorld;
+                Core.Camera.XY += _mouseAnchor - Core.MouseWorld;
                 _playheadNew = Core.Camera.X;
             } else if (_play) {
                 Core.Camera.X += 300 * gameTime.GetElapsedSeconds();
@@ -173,8 +173,8 @@ namespace GameProject {
             foreach (var n in Quadtree<Note>.Nodes)
                 s.DrawRectangle(n, Color.White * 0.2f, 4);
 
-            foreach (var e in Quadtree<Note>.Items)
-                s.DrawLine(e.Item.AABB.Center.ToVector2(), e.Node.Center.ToVector2(), Color.White * .5f, 4);
+            foreach (var b in Quadtree<Note>.Bundles)
+                s.DrawLine(b.Item.AABB.Center.ToVector2(), b.Node.Center.ToVector2(), Color.White * .5f, 4);
 
             if (_isSelecting) {
                 foreach (var n in _selectedNotesTemp)

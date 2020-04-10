@@ -26,5 +26,9 @@ namespace GameProject {
         private Rectangle _note;
 
         public Rectangle AABB => _note;
+
+        public float Angle => 0;
+
+        public Vector2 Origin => Vector2.Zero;
     }
 }
