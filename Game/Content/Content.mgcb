@@ -31,3 +31,6 @@
 /processorParam:TextureFormat=Color
 /build:Pixel.png
 
+#begin SourceCodePro-Medium.ttf
+/copy:SourceCodePro-Medium.ttf
+
