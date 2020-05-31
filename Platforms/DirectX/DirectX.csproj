@@ -11,8 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Content.Builder" Version="3.7.0.9" />
-    <PackageReference Include="MonoGame.Framework.WindowsDX.Core" Version="3.8.0.3" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1375-develop" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1375-develop" />
     <PackageReference Include="Apos.Content.Read" Version="0.1.1" />
     <PackageReference Include="MonoGame.Extended" Version="3.7.0" />
     <PackageReference Include="Dcrew.MonoGame.2D_Camera" Version="1.4.3" />
