@@ -1,4 +1,4 @@
-using Dcrew.MonoGame._2D_Spatial_Partition;
+using Dcrew.Spatial;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Apos.Input;
-using Dcrew.MonoGame._2D_Spatial_Partition;
+using Dcrew.Spatial;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -10,32 +10,32 @@ using MonoGame.Extended;
 namespace GameProject {
     public class Canvas {
         public Canvas() {
-            Quadtree<Note>.Add(new Note(50, 0, 100, 30));
-            Quadtree<Note>.Add(new Note(200, 0, 100, 30));
+            _quadtree.Add(new Note(50, 0, 100, 30));
+            _quadtree.Add(new Note(200, 0, 100, 30));
 
-            Quadtree<Note>.Add(new Note(50, 100, 100, 30));
-            Quadtree<Note>.Add(new Note(200, 100, 100, 30));
+            _quadtree.Add(new Note(50, 100, 100, 30));
+            _quadtree.Add(new Note(200, 100, 100, 30));
 
-            Quadtree<Note>.Add(new Note(400, 0, 100, 30));
-            Quadtree<Note>.Add(new Note(600, 0, 100, 30));
+            _quadtree.Add(new Note(400, 0, 100, 30));
+            _quadtree.Add(new Note(600, 0, 100, 30));
 
-            Quadtree<Note>.Add(new Note(400, 100, 100, 30));
-            Quadtree<Note>.Add(new Note(600, 100, 100, 30));
+            _quadtree.Add(new Note(400, 100, 100, 30));
+            _quadtree.Add(new Note(600, 100, 100, 30));
 
-            Quadtree<Note>.Add(new Note(50, 200, 100, 30));
-            Quadtree<Note>.Add(new Note(200, 200, 100, 30));
+            _quadtree.Add(new Note(50, 200, 100, 30));
+            _quadtree.Add(new Note(200, 200, 100, 30));
 
-            Quadtree<Note>.Add(new Note(50, 400, 100, 30));
-            Quadtree<Note>.Add(new Note(200, 400, 100, 30));
+            _quadtree.Add(new Note(50, 400, 100, 30));
+            _quadtree.Add(new Note(200, 400, 100, 30));
 
-            Quadtree<Note>.Add(new Note(400, 200, 100, 30));
-            Quadtree<Note>.Add(new Note(600, 200, 100, 30));
+            _quadtree.Add(new Note(400, 200, 100, 30));
+            _quadtree.Add(new Note(600, 200, 100, 30));
 
-            Quadtree<Note>.Add(new Note(400, 400, 100, 30));
-            Quadtree<Note>.Add(new Note(600, 400, 100, 30));
+            _quadtree.Add(new Note(400, 400, 100, 30));
+            _quadtree.Add(new Note(600, 400, 100, 30));
 
-            Quadtree<Note>.Add(new Note(800, -200, 100, 30));
-            Quadtree<Note>.Add(new Note(1500, -1000, 100, 30));
+            _quadtree.Add(new Note(800, -200, 100, 30));
+            _quadtree.Add(new Note(1500, -1000, 100, 30));
         }
 
         public void UpdateInput(GameTime gameTime) {
@@ -69,7 +69,7 @@ namespace GameProject {
                 _playheadOld = _playheadNew;
                 _playheadNew = Core.Camera.X;
 
-                foreach (Note n in Quadtree<Note>.Query(Quadtree<Note>.Bounds)) {
+                foreach (Note n in _quadtree.Query(_quadtree.Bounds)) {
                     if (_playheadOld < n.Start && _playheadNew > n.Start) {
                         Core.Midi.PlayNote(40);
                     }
@@ -85,8 +85,8 @@ namespace GameProject {
 
             if (_currentMode == Modes.selection) {
                 if (Triggers.ToggleSelectAll.Pressed()) {
-                    if (_selectedNotes.Count < Quadtree<Note>.Items.Count()) {
-                        _selectedNotes.UnionWith(Quadtree<Note>.Query(Quadtree<Note>.Bounds));
+                    if (_selectedNotes.Count < _quadtree.ItemCount) {
+                        _selectedNotes.UnionWith(_quadtree.Query(_quadtree.Bounds));
                     } else {
                         _selectedNotes.Clear();
                     }
@@ -105,12 +105,12 @@ namespace GameProject {
 
                     if (Triggers.SelectionDragAdd.Held()) {
                         _selectedNotesTemp.UnionWith(_selectedNotes);
-                        _selectedNotesTemp.UnionWith(Quadtree<Note>.Query(_selection));
+                        _selectedNotesTemp.UnionWith(_quadtree.Query(_selection));
                     } else if (Triggers.SelectionDragExclude.Held()) {
                         _selectedNotesTemp.UnionWith(_selectedNotes);
-                        _selectedNotesTemp.ExceptWith(Quadtree<Note>.Query(_selection));
+                        _selectedNotesTemp.ExceptWith(_quadtree.Query(_selection));
                     } else {
-                        _selectedNotesTemp.UnionWith(Quadtree<Note>.Query(_selection));
+                        _selectedNotesTemp.UnionWith(_quadtree.Query(_selection));
                     }
                 }
                 if (_isSelecting && Triggers.SelectionDrag.Released()) {
@@ -129,7 +129,7 @@ namespace GameProject {
                     _grabAnchorInitial = Core.MouseWorld;
 
                     Note newNote = new Note((int)Core.MouseWorld.X, (int)Core.MouseWorld.Y, 100, 30);
-                    Quadtree<Note>.Add(newNote);
+                    _quadtree.Add(newNote);
 
                     _selectedNotes.Clear();
                     _selectedNotes.Add(newNote);
@@ -152,7 +152,7 @@ namespace GameProject {
 
                 foreach (var n in _selectedNotes) {
                     n.XY += diff;
-                    Quadtree<Note>.Update(n);
+                    _quadtree.Update(n);
                 }
                 _grabAnchor = Core.MouseWorld;
             }
@@ -181,13 +181,13 @@ namespace GameProject {
         public void Draw(SpriteBatch s) {
             _pianoRoll.Draw(s);
 
-            foreach (var n in Quadtree<Note>.Query(Quadtree<Note>.Bounds))
+            foreach (var n in _quadtree.Query(_quadtree.Bounds))
                 n.Draw(s, Color.White);
 
-            foreach (var n in Quadtree<Note>.Nodes)
+            foreach (var n in _quadtree.Nodes)
                 s.DrawRectangle(n, Color.White * 0.2f, 4);
 
-            foreach (var b in Quadtree<Note>.Bundles)
+            foreach (var b in _quadtree.Bundles)
                 s.DrawLine(b.Item.AABB.Center.ToVector2(), b.Node.Center.ToVector2(), Color.White * .5f, 4);
 
             if (_isSelecting) {
@@ -257,5 +257,7 @@ namespace GameProject {
         int _pianoStart = 0;
         int _pianoEnd = 36;
         PianoRoll _pianoRoll = new PianoRoll(0, 36);
+
+        Quadtree<Note> _quadtree = new Quadtree<Note>();
     }
 }

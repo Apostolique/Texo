@@ -11,12 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1375-develop" />
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1375-develop" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
     <PackageReference Include="Apos.Content.Read" Version="0.1.1" />
     <PackageReference Include="MonoGame.Extended" Version="3.7.0" />
-    <PackageReference Include="Dcrew.MonoGame.2D_Camera" Version="1.4.3" />
-    <PackageReference Include="Dcrew.MonoGame.2D_Spatial_Partition" Version="1.3.2" />
+    <PackageReference Include="Dcrew.MonoGame.2D_Camera" Version="1.5.1" />
+    <PackageReference Include="Dcrew.Spatial" Version="1.5.3" />
     <PackageReference Include="Apos.Input" Version="0.8.3" />
     <PackageReference Include="Apos.Gui" Version="0.12.2" />
     <PackageReference Include="NAudio" Version="1.10.0" />
