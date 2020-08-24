@@ -3,87 +3,48 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GameProject {
     public static class Triggers {
-        public static ConditionComposite PlayInteraction =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.Space)),
-                new ConditionSet(new ConditionGamePad(GamePadButton.A, 0))
+        public static ICondition PlayInteraction =
+            new AnyCondition(
+                new KeyboardCondition(Keys.Space),
+                new GamePadCondition(GamePadButton.A, 0)
             );
 
-        public static ConditionComposite RotateLeft =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.OemComma))
+        public static ICondition RotateLeft = new KeyboardCondition(Keys.OemComma);
+        public static ICondition RotateRight = new KeyboardCondition(Keys.OemPeriod);
+
+        public static ICondition CameraDrag = new MouseCondition(MouseButton.MiddleButton);
+
+        public static ICondition ToggleSelectAll = new KeyboardCondition(Keys.A);
+        public static ICondition SelectionDrag = new MouseCondition(MouseButton.LeftButton);
+        public static ICondition SelectionDragAdd =
+            new AllCondition(
+                new MouseCondition(MouseButton.LeftButton),
+                new KeyboardCondition(Keys.LeftShift)
             );
-        public static ConditionComposite RotateRight =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.OemPeriod))
+        public static ICondition SelectionDragExclude =
+            new AllCondition(
+                new MouseCondition(MouseButton.LeftButton),
+                new KeyboardCondition(Keys.LeftControl)
             );
 
-        public static ConditionComposite CameraDrag =
-            new ConditionComposite(
-                new ConditionSet(new ConditionMouse(MouseButton.MiddleButton))
+        public static ICondition ModeSwitch = new MouseCondition(MouseButton.MiddleButton);
+
+        public static ICondition Grab = new KeyboardCondition(Keys.G);
+        public static ICondition GrabConfirm = new MouseCondition(MouseButton.LeftButton);
+        public static ICondition GrabCancel = new MouseCondition(MouseButton.RightButton);
+
+        public static ICondition CreateNote =
+            new AllCondition(
+                new KeyboardCondition(Keys.A),
+                new KeyboardCondition(Keys.LeftShift)
             );
 
-        public static ConditionComposite ToggleSelectAll =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.A))
-            );
-        public static ConditionComposite SelectionDrag =
-            new ConditionComposite(
-                new ConditionSet(new ConditionMouse(MouseButton.LeftButton))
-            );
-        public static ConditionComposite SelectionDragAdd =
-            new ConditionComposite(
-                new ConditionSet(new ConditionMouse(MouseButton.LeftButton), new ConditionKeyboard(Keys.LeftShift))
-            );
-        public static ConditionComposite SelectionDragExclude =
-            new ConditionComposite(
-                new ConditionSet(new ConditionMouse(MouseButton.LeftButton), new ConditionKeyboard(Keys.LeftControl))
-            );
+        public static ICondition DoNote = new KeyboardCondition(Keys.Enter);
 
-        public static ConditionComposite ModeSwitch =
-            new ConditionComposite(
-                new ConditionSet(new ConditionMouse(MouseButton.MiddleButton))
-            );
+        public static ICondition RemoveStart = new KeyboardCondition(Keys.F5);
+        public static ICondition AddStart = new KeyboardCondition(Keys.F6);
 
-        public static ConditionComposite Grab =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.G))
-            );
-        public static ConditionComposite GrabConfirm =
-            new ConditionComposite(
-                new ConditionSet(new ConditionMouse(MouseButton.LeftButton))
-            );
-        public static ConditionComposite GrabCancel =
-            new ConditionComposite(
-                new ConditionSet(new ConditionMouse(MouseButton.RightButton))
-            );
-
-        public static ConditionComposite CreateNote =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.A), new ConditionKeyboard(Keys.LeftShift))
-            );
-
-        public static ConditionComposite DoNote =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.Enter))
-            );
-
-        public static ConditionComposite RemoveStart =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.F5))
-            );
-        public static ConditionComposite AddStart =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.F6))
-            );
-
-        public static ConditionComposite RemoveEnd =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.F7))
-            );
-        public static ConditionComposite AddEnd =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.F8))
-            );
+        public static ICondition RemoveEnd = new KeyboardCondition(Keys.F7);
+        public static ICondition AddEnd = new KeyboardCondition(Keys.F8);
     }
 }

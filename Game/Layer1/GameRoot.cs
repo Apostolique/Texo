@@ -130,10 +130,10 @@ namespace GameProject {
         Effect _grid;
         Canvas _canvas;
 
-        ConditionComposite _quit =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.Escape)),
-                new ConditionSet(new ConditionGamePad(GamePadButton.Back, 0))
+        ICondition _quit =
+            new AnyCondition(
+                new KeyboardCondition(Keys.Escape),
+                new GamePadCondition(GamePadButton.Back, 0)
             );
     }
 }

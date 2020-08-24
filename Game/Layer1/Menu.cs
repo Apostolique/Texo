@@ -16,7 +16,7 @@ namespace GameProject {
             mp.Layout = new LayoutVerticalCenter();
             mp.Add(deviceSelectMenu());
 
-            _menuFocus = new ComponentFocus(mp, Default.ConditionPreviousFocus, Default.ConditionNextFocus);
+            _menuFocus = new ComponentFocus(mp, Default.ConditionPrevFocus, Default.ConditionNextFocus);
         }
 
         ComponentFocus _menuFocus;
