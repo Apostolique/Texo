@@ -181,7 +181,7 @@ namespace GameProject {
         public void Draw(SpriteBatch s) {
             _pianoRoll.Draw(s);
 
-            foreach (var n in _quadtree.Query(_quadtree.Bounds))
+            foreach (var n in _quadtree.Query(new Rectangle(Core.Camera.XY.ToPoint(), (Core.Camera.Origin * 2).ToPoint()), Core.Camera.Angle, Core.Camera.Origin))
                 n.Draw(s, Color.White);
 
             foreach (var n in _quadtree.Nodes)

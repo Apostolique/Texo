@@ -1,6 +1,6 @@
 using System;
 using Apos.Input;
-using Dcrew.MonoGame._2D_Camera;
+using Dcrew.Camera;
 using Microsoft.Xna.Framework;
 
 namespace GameProject {
