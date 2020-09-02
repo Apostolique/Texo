@@ -156,31 +156,13 @@ namespace GameProject {
                 }
                 _grabAnchor = Core.MouseWorld;
             }
-
-            if (Triggers.RemoveStart.Pressed()) {
-                _pianoStart--;
-                _pianoRoll = new PianoRoll(_pianoStart, _pianoEnd);
-            }
-            if (Triggers.AddStart.Pressed()) {
-                _pianoStart++;
-                _pianoRoll = new PianoRoll(_pianoStart, _pianoEnd);
-            }
-            if (Triggers.RemoveEnd.Pressed()) {
-                _pianoEnd--;
-                _pianoRoll = new PianoRoll(_pianoStart, _pianoEnd);
-            }
-            if (Triggers.AddEnd.Pressed()) {
-                _pianoEnd++;
-                _pianoRoll = new PianoRoll(_pianoStart, _pianoEnd);
-            }
         }
+
         public void Update(GameTime gameTime) {
 
         }
 
         public void Draw(SpriteBatch s) {
-            _pianoRoll.Draw(s);
-
             foreach (var n in _quadtree.Query(new Rectangle(Core.Camera.XY.ToPoint(), (Core.Camera.Origin * 2).ToPoint()), Core.Camera.Angle, Core.Camera.Origin))
                 n.Draw(s, Color.White);
 
@@ -256,7 +238,6 @@ namespace GameProject {
 
         int _pianoStart = 0;
         int _pianoEnd = 36;
-        PianoRoll _pianoRoll = new PianoRoll(0, 36);
 
         Quadtree<Note> _quadtree = new Quadtree<Note>();
     }
