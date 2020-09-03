@@ -59,6 +59,10 @@ namespace GameProject {
                 }
             }
 
+            if (Triggers.ShrinkQuadtree.Pressed()) {
+                _quadtree.Shrink();
+            }
+
             if (_currentMode == Modes.selection) {
                 if (Triggers.ToggleSelectAll.Pressed()) {
                     if (_selectedNotes.Count < _quadtree.Count()) {
@@ -112,6 +116,12 @@ namespace GameProject {
                     _draggedNotes.Clear();
                     _draggedNotes.Add((newNote, newNote.XY.ToVector2() - _grabStart));
                 }
+                if (!_isSelecting && Triggers.DeleteNote.Pressed()) {
+                    foreach (Note n in _selectedNotes) {
+                        _quadtree.Remove(n);
+                    }
+                    _selectedNotes.Clear();
+                }
                 if (!_isSelecting && Triggers.Grab.Pressed()) {
                     _currentMode = Modes.grab;
                     _grabStart = Core.MouseWorld;
@@ -137,6 +147,10 @@ namespace GameProject {
                     n.Note.XY = new Point((int)newPosition.X, snapInt((int)newPosition.Y, Core.NoteHeight));
                     _quadtree.Update(n.Note);
                 }
+
+                if (_currentMode != Modes.grab) {
+                    _draggedNotes.Clear();
+                }
             }
         }
 
@@ -161,9 +175,6 @@ namespace GameProject {
         }
 
         public void Update() {
-            if (Triggers.ShrinkQuadtree.Pressed()) {
-                _quadtree.Shrink();
-            }
         }
 
         public void Draw(SpriteBatch s) {

@@ -38,6 +38,11 @@ namespace GameProject {
                 new KeyboardCondition(Keys.A),
                 new KeyboardCondition(Keys.LeftShift)
             );
+        public static ICondition DeleteNote =
+            new AnyCondition(
+                new KeyboardCondition(Keys.Delete),
+                new KeyboardCondition(Keys.Back)
+            );
 
         public static ICondition DoNote = new KeyboardCondition(Keys.Enter);
 
