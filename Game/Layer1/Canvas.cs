@@ -181,8 +181,8 @@ namespace GameProject {
             foreach (var n in _quadtree)
                 n.Draw(s, Color.White);
 
-            foreach (var n in _quadtree.Nodes)
-                s.DrawRectangle(n, Color.White * 0.2f, 4);
+            // foreach (var n in _quadtree.Nodes)
+            //     s.DrawRectangle(n, Color.White * 0.2f, 4);
 
             if (_isSelecting) {
                 foreach (var n in _selectedNotesTemp)
