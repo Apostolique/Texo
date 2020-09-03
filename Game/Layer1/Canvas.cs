@@ -149,7 +149,15 @@ namespace GameProject {
         }
 
         private int snapInt(int d, int nearest) {
-            return d / nearest * nearest;
+            return divide(d, nearest) * nearest;
+        }
+
+        /// <summary>
+        /// Handles negative numbers.
+        /// </summary>
+        private int divide(int a, int b) {
+            int r = a / b;
+            return (a < 0 && a != b * r) ? r - 1 : r;
         }
 
         public void Update() {
