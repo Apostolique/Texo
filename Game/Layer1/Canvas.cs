@@ -144,6 +144,7 @@ namespace GameProject {
 
                 foreach (var n in _draggedNotes) {
                     Vector2 newPosition = grab + n.Offset;
+                    // FIXME: Figure out why when the mouse crosses near the zero Y axis, positive and negative notes lose their relative offset.
                     n.Note.XY = new Point((int)newPosition.X, snapInt((int)newPosition.Y, Core.NoteHeight));
                     _quadtree.Update(n.Note);
                 }
