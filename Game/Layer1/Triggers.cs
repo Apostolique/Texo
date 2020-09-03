@@ -41,8 +41,7 @@ namespace GameProject {
 
         public static ICondition DoNote = new KeyboardCondition(Keys.Enter);
 
-        public static ICondition RemoveStart = new KeyboardCondition(Keys.F5);
-        public static ICondition AddStart = new KeyboardCondition(Keys.F6);
+        public static ICondition ShrinkQuadtree = new KeyboardCondition(Keys.F5);
 
         public static ICondition RemoveEnd = new KeyboardCondition(Keys.F7);
         public static ICondition AddEnd = new KeyboardCondition(Keys.F8);

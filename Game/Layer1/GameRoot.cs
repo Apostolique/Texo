@@ -87,6 +87,8 @@ namespace GameProject {
                 _canvas.UpdateInput(gameTime);
             }
 
+            _canvas.Update();
+
             float scale = 1f;
             Vector2 size = new Vector2(_pixel.Width, _pixel.Height);
             Vector2 posOffset = new Vector2(0, 0);

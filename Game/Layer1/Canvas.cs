@@ -10,32 +10,8 @@ using MonoGame.Extended;
 namespace GameProject {
     public class Canvas {
         public Canvas() {
-            _quadtree.Add(new Note(50, 0, 100, 30));
-            _quadtree.Add(new Note(200, 0, 100, 30));
-
-            _quadtree.Add(new Note(50, 100, 100, 30));
-            _quadtree.Add(new Note(200, 100, 100, 30));
-
-            _quadtree.Add(new Note(400, 0, 100, 30));
-            _quadtree.Add(new Note(600, 0, 100, 30));
-
-            _quadtree.Add(new Note(400, 100, 100, 30));
-            _quadtree.Add(new Note(600, 100, 100, 30));
-
-            _quadtree.Add(new Note(50, 200, 100, 30));
-            _quadtree.Add(new Note(200, 200, 100, 30));
-
-            _quadtree.Add(new Note(50, 400, 100, 30));
-            _quadtree.Add(new Note(200, 400, 100, 30));
-
-            _quadtree.Add(new Note(400, 200, 100, 30));
-            _quadtree.Add(new Note(600, 200, 100, 30));
-
-            _quadtree.Add(new Note(400, 400, 100, 30));
-            _quadtree.Add(new Note(600, 400, 100, 30));
-
-            _quadtree.Add(new Note(800, -200, 100, 30));
-            _quadtree.Add(new Note(1500, -1000, 100, 30));
+            _quadtree.Add(new Note(0, 0, 100, 30));
+            _quadtree.Add(new Note(0, 90, 100, 30));
         }
 
         public void UpdateInput(GameTime gameTime) {
@@ -85,8 +61,8 @@ namespace GameProject {
 
             if (_currentMode == Modes.selection) {
                 if (Triggers.ToggleSelectAll.Pressed()) {
-                    if (_selectedNotes.Count < _quadtree.ItemCount) {
-                        _selectedNotes.UnionWith(_quadtree.Query(_quadtree.Bounds));
+                    if (_selectedNotes.Count < _quadtree.Count()) {
+                        _selectedNotes.UnionWith(_quadtree);
                     } else {
                         _selectedNotes.Clear();
                     }
@@ -105,12 +81,12 @@ namespace GameProject {
 
                     if (Triggers.SelectionDragAdd.Held()) {
                         _selectedNotesTemp.UnionWith(_selectedNotes);
-                        _selectedNotesTemp.UnionWith(_quadtree.Query(_selection));
+                        _selectedNotesTemp.UnionWith(querySelection());
                     } else if (Triggers.SelectionDragExclude.Held()) {
                         _selectedNotesTemp.UnionWith(_selectedNotes);
-                        _selectedNotesTemp.ExceptWith(_quadtree.Query(_selection));
+                        _selectedNotesTemp.ExceptWith(querySelection());
                     } else {
-                        _selectedNotesTemp.UnionWith(_quadtree.Query(_selection));
+                        _selectedNotesTemp.UnionWith(querySelection());
                     }
                 }
                 if (_isSelecting && Triggers.SelectionDrag.Released()) {
@@ -125,52 +101,69 @@ namespace GameProject {
 
                 if (!_isSelecting && Triggers.CreateNote.Pressed()) {
                     _currentMode = Modes.grab;
-                    _grabAnchor = Core.MouseWorld;
-                    _grabAnchorInitial = Core.MouseWorld;
+                    _grabStart = Core.MouseWorld;
 
-                    Note newNote = new Note((int)Core.MouseWorld.X, (int)Core.MouseWorld.Y, 100, 30);
+                    Note newNote = new Note((int)Core.MouseWorld.X, snapInt((int)Core.MouseWorld.Y, Core.NoteHeight), 100, Core.NoteHeight);
                     _quadtree.Add(newNote);
 
                     _selectedNotes.Clear();
                     _selectedNotes.Add(newNote);
+
+                    _draggedNotes.Clear();
+                    _draggedNotes.Add((newNote, newNote.XY.ToVector2() - _grabStart));
                 }
                 if (!_isSelecting && Triggers.Grab.Pressed()) {
                     _currentMode = Modes.grab;
-                    _grabAnchor = Core.MouseWorld;
-                    _grabAnchorInitial = Core.MouseWorld;
+                    _grabStart = Core.MouseWorld;
+
+                    _draggedNotes.Clear();
+                    foreach (Note n in _selectedNotes) {
+                        _draggedNotes.Add((n, n.XY.ToVector2() - _grabStart));
+                    }
                 }
             } else if (_currentMode == Modes.grab) {
-                Point diff = (Core.MouseWorld - _grabAnchor).ToPoint();
+                Vector2 grab = Core.MouseWorld;
 
+                if (Triggers.GrabCancel.Pressed()) {
+                    _currentMode = Modes.selection;
+                    grab = _grabStart;
+                }
                 if (Triggers.GrabConfirm.Pressed()) {
                     _currentMode = Modes.selection;
                 }
-                if (Triggers.GrabCancel.Pressed()) {
-                    _currentMode = Modes.selection;
-                    diff = (_grabAnchorInitial - _grabAnchor).ToPoint();
-                }
 
-                foreach (var n in _selectedNotes) {
-                    n.XY += diff;
-                    _quadtree.Update(n);
+                foreach (var n in _draggedNotes) {
+                    Vector2 newPosition = grab + n.Offset;
+                    n.Note.XY = new Point((int)newPosition.X, snapInt((int)newPosition.Y, Core.NoteHeight));
+                    _quadtree.Update(n.Note);
                 }
-                _grabAnchor = Core.MouseWorld;
             }
         }
 
-        public void Update(GameTime gameTime) {
+        // Note: Maybe the quadtree should work with rectangles of size 0 and use their locations as a point?
+        private IEnumerable<Note> querySelection() {
+            if (_selection.Width == 0 || _selection.Height == 0) {
+                return _quadtree.Query(_selection.Location);
+            }
+            return _quadtree.Query(_selection);
+        }
 
+        private int snapInt(int d, int nearest) {
+            return d / nearest * nearest;
+        }
+
+        public void Update() {
+            if (Triggers.ShrinkQuadtree.Pressed()) {
+                _quadtree.Shrink();
+            }
         }
 
         public void Draw(SpriteBatch s) {
-            foreach (var n in _quadtree.Query(new Rectangle(Core.Camera.XY.ToPoint(), (Core.Camera.Origin * 2).ToPoint()), Core.Camera.Angle, Core.Camera.Origin))
+            foreach (var n in _quadtree)
                 n.Draw(s, Color.White);
 
             foreach (var n in _quadtree.Nodes)
                 s.DrawRectangle(n, Color.White * 0.2f, 4);
-
-            foreach (var b in _quadtree.Bundles)
-                s.DrawLine(b.Item.AABB.Center.ToVector2(), b.Node.Center.ToVector2(), Color.White * .5f, 4);
 
             if (_isSelecting) {
                 foreach (var n in _selectedNotesTemp)
@@ -222,22 +215,19 @@ namespace GameProject {
         Vector2 _mouseAnchor = Vector2.Zero;
         Vector2 _cameraAnchor = Vector2.Zero;
 
-        Vector2 _grabAnchorInitial = Vector2.Zero;
-        Vector2 _grabAnchor = Vector2.Zero;
-
         Rectangle _selection = new Rectangle(0, 0, 0, 0);
         Vector2 _selectionStart = Vector2.Zero;
         Vector2 _selectionEnd = Vector2.Zero;
         bool _isSelecting = false;
 
+        Vector2 _grabStart = Vector2.Zero;
+
         HashSet<Note> _selectedNotesTemp = new HashSet<Note>();
         HashSet<Note> _selectedNotes = new HashSet<Note>();
+        List<(Note Note, Vector2 Offset)> _draggedNotes = new List<(Note, Vector2)>();
 
         float _playheadOld = 0;
         float _playheadNew = 0;
-
-        int _pianoStart = 0;
-        int _pianoEnd = 36;
 
         Quadtree<Note> _quadtree = new Quadtree<Note>();
     }
