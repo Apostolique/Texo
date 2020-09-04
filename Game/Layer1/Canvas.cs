@@ -105,16 +105,16 @@ namespace GameProject {
 
                 if (!_isSelecting && Triggers.CreateNote.Pressed()) {
                     _currentMode = Modes.grab;
-                    _grabStart = Core.MouseWorld;
+                    _grabStart = mouseToGrid(Core.MouseWorld);
 
-                    Note newNote = new Note((int)Core.MouseWorld.X, snapInt((int)Core.MouseWorld.Y, Core.NoteHeight), 100, Core.NoteHeight);
+                    Note newNote = new Note((int)_grabStart.X, (int)_grabStart.Y, 100, Core.NoteHeight);
                     _quadtree.Add(newNote);
 
                     _selectedNotes.Clear();
                     _selectedNotes.Add(newNote);
 
                     _draggedNotes.Clear();
-                    _draggedNotes.Add((newNote, newNote.XY.ToVector2() - _grabStart));
+                    _draggedNotes.Add((newNote, Vector2.Zero));
                 }
                 if (!_isSelecting && Triggers.DeleteNote.Pressed()) {
                     foreach (Note n in _selectedNotes) {
@@ -124,7 +124,7 @@ namespace GameProject {
                 }
                 if (!_isSelecting && Triggers.Grab.Pressed()) {
                     _currentMode = Modes.grab;
-                    _grabStart = Core.MouseWorld;
+                    _grabStart = mouseToGrid(Core.MouseWorld);
 
                     _draggedNotes.Clear();
                     foreach (Note n in _selectedNotes) {
@@ -132,7 +132,7 @@ namespace GameProject {
                     }
                 }
             } else if (_currentMode == Modes.grab) {
-                Vector2 grab = Core.MouseWorld;
+                Vector2 grab = mouseToGrid(Core.MouseWorld);
 
                 if (Triggers.GrabCancel.Pressed()) {
                     _currentMode = Modes.selection;
@@ -145,7 +145,7 @@ namespace GameProject {
                 foreach (var n in _draggedNotes) {
                     Vector2 newPosition = grab + n.Offset;
                     // FIXME: Figure out why when the mouse crosses near the zero Y axis, positive and negative notes lose their relative offset.
-                    n.Note.XY = new Point((int)newPosition.X, snapInt((int)newPosition.Y, Core.NoteHeight));
+                    n.Note.XY = new Point((int)newPosition.X, (int)newPosition.Y);
                     _quadtree.Update(n.Note);
                 }
 
@@ -163,16 +163,11 @@ namespace GameProject {
             return _quadtree.Query(_selection);
         }
 
-        private int snapInt(int d, int nearest) {
-            return divide(d, nearest) * nearest;
-        }
+        private Vector2 mouseToGrid(Vector2 v) {
+            //Centered because it's centered on the notes based on the note height.
+            float y = (float)Math.Floor(v.Y / Core.NoteHeight) * Core.NoteHeight;
 
-        /// <summary>
-        /// Handles negative numbers.
-        /// </summary>
-        private int divide(int a, int b) {
-            int r = a / b;
-            return (a < 0 && a != b * r) ? r - 1 : r;
+            return new Vector2(v.X, y);
         }
 
         public void Update() {
