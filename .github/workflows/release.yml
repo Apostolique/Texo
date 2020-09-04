@@ -39,21 +39,24 @@ jobs:
       run: dotnet publish Platforms/Core -r linux-x64 -c Release --output build-linux
     - name: Clean NetCoreBeauty
       run: find . -name 'NetCoreBeauty' -type f -delete
-    - uses: josephbmanley/butler-publish-itchio-action@master
+    - name: Publish Windows build to itch.io
+      uses: josephbmanley/butler-publish-itchio-action@master
       env:
         BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
         CHANNEL: windows
         ITCH_GAME: texo
         ITCH_USER: apos
         PACKAGE: build-windows
-    - uses: josephbmanley/butler-publish-itchio-action@master
+    - name: Publish OSX build to itch.io
+      uses: josephbmanley/butler-publish-itchio-action@master
       env:
         BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
         CHANNEL: osx
         ITCH_GAME: texo
         ITCH_USER: apos
         PACKAGE: build-osx
-    - uses: josephbmanley/butler-publish-itchio-action@master
+    - name: Publish Linux build to itch.io
+      uses: josephbmanley/butler-publish-itchio-action@master
       env:
         BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
         CHANNEL: linux
