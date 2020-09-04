@@ -9,11 +9,13 @@
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
     <RuntimeIdentifiers>win10-x64;linux-x64;osx-x64</RuntimeIdentifiers>
+    <BeautyExcludes>SDL2*;libSDL2*;sdl2*;soft_oal*;openal*;MonoGame.Framework*</BeautyExcludes>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
+    <PackageReference Include="nulastudio.NetCoreBeauty" Version="1.2.9" />
     <PackageReference Include="Apos.Content.Read" Version="0.1.1" />
     <PackageReference Include="MonoGame.Extended" Version="3.7.0" />
     <PackageReference Include="Dcrew.Camera" Version="1.5.2" />
