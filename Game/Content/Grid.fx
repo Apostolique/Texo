@@ -58,7 +58,10 @@ float4 SpritePixelShader(VertexToPixel PSIn): COLOR0 {
     float x = PSIn.TexCoord.x;
     float y = PSIn.TexCoord.y;
 
-    if (mod(x, 1) <= LineSize.x / GridSize.x || mod(y, 1) <= LineSize.y / GridSize.y) {
+    float width = LineSize.x / GridSize.x;
+    float height = LineSize.y / GridSize.y;
+
+    if (mod(x + width / 2, 1) <= width || mod(y + height / 2, 1) <= height) {
         color = GridColor;
     } else {
         color = BackgroundColor;
