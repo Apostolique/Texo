@@ -45,7 +45,8 @@ namespace GameProject {
                 _playheadOld = _playheadNew;
                 _playheadNew = Core.Camera.X;
 
-                foreach (Note n in _quadtree.Query(_quadtree.Bounds)) {
+                // TODO: Do a better search for notes. Can we queue more notes ahead of time?
+                foreach (Note n in _quadtree.Query(new Rectangle((int)_playheadOld, _quadtree.Bounds.Top, (int)(_playheadNew - _playheadOld), _quadtree.Bounds.Bottom))) {
                     if (_playheadOld < n.Start && _playheadNew > n.Start) {
                         Core.Midi.PlayNote(40);
                     }
