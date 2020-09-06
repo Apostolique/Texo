@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Apos.Input;
@@ -70,8 +70,8 @@ namespace GameProject {
         protected override void Update(GameTime gameTime) {
             GuiHelper.UpdateSetup();
 
-            if (_quit.Pressed())
-                Exit();
+            if (_toggleMenu.Pressed())
+                Core.ShowMenu = !Core.ShowMenu;
 
             if (Triggers.DoNote.Pressed()) {
                 Core.Midi.PlayNote(50);
