@@ -27,7 +27,7 @@ namespace GameProject {
             Game = game;
             Window = game.Window;
 
-            Camera = new Camera(new Vector2(0, 0), 0, new Vector2(Depth));
+            Camera = new Camera(new Vector2(-200, -1800), 0, new Vector2(Depth));
         }
         public static void UpdateMouseWorld() {
             MouseWorld = Camera.ScreenToWorld(InputHelper.NewMouse.X, InputHelper.NewMouse.Y);

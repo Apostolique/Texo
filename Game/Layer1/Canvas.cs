@@ -10,8 +10,8 @@ using MonoGame.Extended;
 namespace GameProject {
     public class Canvas {
         public Canvas() {
-            _quadtree.Add(new Note(0, 0, 100, 30));
-            _quadtree.Add(new Note(0, 90, 100, 30));
+            _quadtree.Add(new Note(0, -1800, 100, 30));
+            _quadtree.Add(new Note(0, -1890, 100, 30));
         }
 
         public void UpdateInput(GameTime gameTime) {
@@ -48,10 +48,10 @@ namespace GameProject {
                 // TODO: Do a better search for notes. Can we queue more notes ahead of time?
                 foreach (Note n in _quadtree.Query(new Rectangle((int)_playheadOld, _quadtree.Bounds.Top, (int)(_playheadNew - _playheadOld), _quadtree.Bounds.Bottom))) {
                     if (_playheadOld < n.Start && _playheadNew > n.Start) {
-                        Core.Midi.PlayNote(40);
+                        Core.Midi.PlayNote(n.Number);
                     }
                     if (_playheadOld < n.End && _playheadNew > n.End) {
-                        Core.Midi.StopNote(40);
+                        Core.Midi.StopNote(n.Number);
                     }
                 }
 
@@ -166,16 +166,19 @@ namespace GameProject {
 
         private Vector2 mouseToGrid(Vector2 v) {
             //Centered because it's centered on the notes based on the note height.
+
+            float x = v.X;
+            // float x = (float)Math.Floor(v.X / Core.NoteWidth) * Core.NoteWidth;
             float y = (float)Math.Floor(v.Y / Core.NoteHeight) * Core.NoteHeight;
 
-            return new Vector2(v.X, y);
+            return new Vector2(x, y);
         }
 
         public void Update() {
         }
 
         public void Draw(SpriteBatch s) {
-            foreach (var n in _quadtree)
+            foreach (var n in _quadtree.Query(Core.Camera.WorldBounds(), Core.Camera.Angle, Core.Camera.Origin))
                 n.Draw(s, Color.White);
 
             // foreach (var n in _quadtree.Nodes)
@@ -183,17 +186,19 @@ namespace GameProject {
 
             if (_isSelecting) {
                 foreach (var n in _selectedNotesTemp)
-                    s.DrawRectangle(n.AABB, Color.Red * 0.8f, 4);
+                    s.DrawRectangle(n.AABB, Color.Red * 0.8f, 2);
             } else {
                 foreach (var n in _selectedNotes)
-                    s.DrawRectangle(n.AABB, Color.Red * 0.8f, 4);
+                    s.DrawRectangle(n.AABB, Color.Red * 0.8f, 2);
             }
 
             if (_currentMode == Modes.selection && _selection.Width > 0 && _selection.Height > 0) {
                 s.DrawRectangle(_selection, Color.Red, 4 / Core.Camera.ScreenToWorldScale());
             }
 
-            //s.DrawLine(_playheadNew, 3000, _playheadNew, -3000, Color.Green, 8);
+            if (_play) {
+                s.DrawLine(_playheadNew, _quadtree.Bounds.Top, _playheadNew, _quadtree.Bounds.Bottom, Color.Green, 8);
+            }
         }
 
         private void cameraRotate(float dAngle) {
@@ -228,8 +233,8 @@ namespace GameProject {
         Modes _currentMode = Modes.selection;
         bool _play = false;
 
+        // TODO: Find a better way to do this.
         Vector2 _mouseAnchor = Vector2.Zero;
-        Vector2 _cameraAnchor = Vector2.Zero;
 
         Rectangle _selection = new Rectangle(0, 0, 0, 0);
         Vector2 _selectionStart = Vector2.Zero;
