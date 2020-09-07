@@ -41,7 +41,8 @@ namespace GameProject {
         public static ICondition DeleteNote =
             new AnyCondition(
                 new KeyboardCondition(Keys.Delete),
-                new KeyboardCondition(Keys.Back)
+                new KeyboardCondition(Keys.Back),
+                new KeyboardCondition(Keys.X)
             );
 
         public static ICondition DoNote = new KeyboardCondition(Keys.Enter);
