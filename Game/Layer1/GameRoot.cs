@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Apos.Input;
@@ -51,7 +51,7 @@ namespace GameProject {
             _grid = Content.Load<Effect>("Grid");
             _grid.Parameters["BackgroundColor"].SetValue(new Color(10, 10, 10).ToVector4());
             _grid.Parameters["GridColor"].SetValue(new Color(30, 30, 30).ToVector4());
-            _grid.Parameters["GridSize"].SetValue(new Vector2(50, Core.NoteHeight));
+            _grid.Parameters["GridSize"].SetValue(new Vector2(Core.NoteWidth, Core.NoteHeight));
             _grid.Parameters["LineSize"].SetValue(new Vector2(Core.LineSize));
 
             // Possible crash if there are no devices?
@@ -134,7 +134,7 @@ namespace GameProject {
         Effect _grid;
         Canvas _canvas;
 
-        ICondition _quit =
+        ICondition _toggleMenu =
             new AnyCondition(
                 new KeyboardCondition(Keys.Escape),
                 new GamePadCondition(GamePadButton.Back, 0)

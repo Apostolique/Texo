@@ -18,6 +18,7 @@ namespace GameProject {
         public static float Depth = 1;
         public static float Linear = 1;
 
+        public static int NoteWidth = 50;
         public static int NoteHeight = 30;
 
         public static int LineSize = 2;
