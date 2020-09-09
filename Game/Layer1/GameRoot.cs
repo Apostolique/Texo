@@ -36,10 +36,7 @@ namespace GameProject {
         protected override void LoadContent() {
             _s = new SpriteBatch(GraphicsDevice);
 
-            using MemoryStream ms = new MemoryStream();
-            TitleContainer.OpenStream($"{Content.RootDirectory}/SourceCodePro-Medium.ttf").CopyTo(ms);
-            byte[] fontBytes = ms.ToArray();
-            _font = DynamicSpriteFont.FromTtf(fontBytes, 30);
+            _font = DynamicSpriteFont.FromTtf(TitleContainer.OpenStream($"{Content.RootDirectory}/SourceCodePro-Medium.ttf"), 30);
 
             GuiHelper.Setup(this, _font);
 
