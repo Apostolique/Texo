@@ -8,9 +8,9 @@ using MonoGame.Extended;
 using SpriteFontPlus;
 
 namespace GameProject {
-    public class Note : IAABB {
+    public class Note : IBounds {
         public Note(int x, int y, int width, int height) {
-            _note = new Rectangle(x, y, width, height);
+            _bounds = new RotRect(x, y, width, height);
         }
 
         public Note Parent {
@@ -22,30 +22,29 @@ namespace GameProject {
             set;
         }
 
-        public Point XY {
-            get => _note.Location;
+        public Vector2 XY {
+            get => _bounds.XY;
             set {
-                _note.Location = value;
+                _bounds.XY = value;
             }
         }
 
-        public Rectangle AABB => _note;
+        public RotRect Bounds => _bounds;
         public float Angle => 0;
         public Vector2 Origin => Vector2.Zero;
 
-        public int Start => _note.Left;
-        public int End => _note.Right;
+        public int Start => _bounds.AABB.Left;
+        public int End => _bounds.AABB.Right;
 
-        public int Number => Math.Min(Math.Max(-(int)Math.Floor(_note.Y / (float)Core.NoteHeight), 0), 127);
+        public int Number => Math.Min(Math.Max(-(int)Math.Floor(_bounds.AABB.Y / (float)Core.NoteHeight), 0), 127);
 
         public void Draw(SpriteBatch s, Color c) {
-            s.FillRectangle(_note, c);
-            s.DrawRectangle(_note, Color.Black * 0.2f, 1);
+            s.FillRectangle(_bounds.AABB, c);
+            s.DrawRectangle(_bounds.AABB, Color.Black * 0.2f, 1);
 
-
-            s.DrawString(GuiHelper.Font, $"{Number}", _note.Location.ToVector2(), Color.Black);
+            s.DrawString(GuiHelper.Font, $"{Number}", _bounds.XY, Color.Black);
         }
 
-        private Rectangle _note;
+        private RotRect _bounds;
     }
 }

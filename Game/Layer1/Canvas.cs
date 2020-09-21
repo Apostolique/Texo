@@ -129,7 +129,7 @@ namespace GameProject {
 
                     _draggedNotes.Clear();
                     foreach (Note n in _selectedNotes) {
-                        _draggedNotes.Add((n, n.XY.ToVector2() - _grabStart));
+                        _draggedNotes.Add((n, n.XY - _grabStart));
                     }
                 }
             } else if (_currentMode == Modes.grab) {
@@ -145,8 +145,7 @@ namespace GameProject {
 
                 foreach (var n in _draggedNotes) {
                     Vector2 newPosition = grab + n.Offset;
-                    // FIXME: Figure out why when the mouse crosses near the zero Y axis, positive and negative notes lose their relative offset.
-                    n.Note.XY = new Point((int)newPosition.X, (int)newPosition.Y);
+                    n.Note.XY = newPosition;
                     _quadtree.Update(n.Note);
                 }
 
@@ -186,10 +185,10 @@ namespace GameProject {
 
             if (_isSelecting) {
                 foreach (var n in _selectedNotesTemp)
-                    s.DrawRectangle(n.AABB, Color.Red * 0.8f, 2);
+                    s.DrawRectangle(n.Bounds.AABB, Color.Red * 0.8f, 2);
             } else {
                 foreach (var n in _selectedNotes)
-                    s.DrawRectangle(n.AABB, Color.Red * 0.8f, 2);
+                    s.DrawRectangle(n.Bounds.AABB, Color.Red * 0.8f, 2);
             }
 
             if (_currentMode == Modes.selection && _selection.Width > 0 && _selection.Height > 0) {
