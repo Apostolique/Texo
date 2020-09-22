@@ -46,7 +46,7 @@ namespace GameProject {
                 _playheadNew = Core.Camera.X;
 
                 // TODO: Do a better search for notes. Can we queue more notes ahead of time?
-                foreach (Note n in _quadtree.Query(new Rectangle((int)_playheadOld, _quadtree.Bounds.Top, (int)(_playheadNew - _playheadOld), _quadtree.Bounds.Bottom))) {
+                foreach (Note n in _quadtree.Query(new RotRect(_playheadOld, _quadtree.Bounds.Top, _playheadNew - _playheadOld, _quadtree.Bounds.Height))) {
                     if (_playheadOld < n.Start && _playheadNew > n.Start) {
                         Core.Midi.PlayNote(n.Number);
                     }
@@ -197,6 +197,10 @@ namespace GameProject {
 
             if (_play) {
                 s.DrawLine(_playheadNew, _quadtree.Bounds.Top, _playheadNew, _quadtree.Bounds.Bottom, Color.Green, 8);
+
+                foreach (var n in _quadtree.Query(new RotRect(_playheadOld, _quadtree.Bounds.Top, _playheadNew - _playheadOld, _quadtree.Bounds.Height))) {
+                    n.Draw(s, Color.Red);
+                }
             }
         }
 
