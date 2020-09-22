@@ -21,7 +21,7 @@
     <PackageReference Include="Dcrew.Camera" Version="1.5.3" />
     <PackageReference Include="Dcrew.Spatial" Version="1.6.3.2" />
     <PackageReference Include="Apos.Gui" Version="0.14.2" />
-    <PackageReference Include="NAudio" Version="1.10.0" />
+    <PackageReference Include="managed-midi" Version="1.9.14" />
   </ItemGroup>
 
   <ItemGroup>

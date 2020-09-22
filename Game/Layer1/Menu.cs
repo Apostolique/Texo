@@ -52,16 +52,16 @@ namespace GameProject {
                 },
                 _grabFocus));
 
-            p.Add(createDynamicText(() => $"Current device: {Core.Midi.Device.name}"));
+            p.Add(createDynamicText(() => $"Current device: {Core.Midi.Device.Details.Name}"));
 
             p.Add(createTitle("Choose a midi device:"));
 
             foreach (var device in Midi.Devices) {
                 p.Add(Default.CreateButton(
-                    device.name,
+                    device.Name,
                     c => {
                         Core.Midi.Dispose();
-                        Core.Midi = new Midi(device.index);
+                        Core.Midi = new Midi(device.Id);
                         return true;
                     },
                     _grabFocus));

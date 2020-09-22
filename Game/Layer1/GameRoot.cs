@@ -5,7 +5,6 @@ using Apos.Input;
 using Apos.Gui;
 using System;
 using SpriteFontPlus;
-using System.IO;
 
 namespace GameProject {
     public class GameRoot : Game {
@@ -52,7 +51,7 @@ namespace GameProject {
             _grid.Parameters["LineSize"].SetValue(new Vector2(Core.LineSize));
 
             // Possible crash if there are no devices?
-            Core.Midi = new Midi(0);
+            Core.Midi = new Midi();
 
             Core.Menu = new Menu();
         }
