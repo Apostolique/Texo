@@ -18,7 +18,7 @@
     <PackageReference Include="Apos.Content.Read" Version="0.1.1" />
     <PackageReference Include="MonoGame.Extended" Version="3.7.0" />
     <PackageReference Include="Dcrew.Camera" Version="1.5.3" />
-    <PackageReference Include="Dcrew.Spatial" Version="1.6.3.2" />
+    <PackageReference Include="Dcrew.Spatial" Version="2.0.3" />
     <PackageReference Include="Apos.Gui" Version="0.14.2" />
     <PackageReference Include="managed-midi" Version="1.9.14" />
   </ItemGroup>

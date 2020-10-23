@@ -46,7 +46,7 @@ namespace GameProject {
                 _playheadNew = Core.Camera.X;
 
                 // TODO: Do a better search for notes. Can we queue more notes ahead of time?
-                foreach (Note n in _quadtree.Query(new RotRect(_playheadOld, _quadtree.Bounds.Top, _playheadNew - _playheadOld, _quadtree.Bounds.Height))) {
+                foreach (Note n in _quadtree.QueryRect(new RotRect(_playheadOld, _quadtree.Bounds.Top, _playheadNew - _playheadOld, _quadtree.Bounds.Height))) {
                     if (_playheadOld < n.Start && _playheadNew > n.Start) {
                         Core.Midi.PlayNote(n.Number);
                     }
@@ -158,9 +158,9 @@ namespace GameProject {
         // Note: Maybe the quadtree should work with rectangles of size 0 and use their locations as a point?
         private IEnumerable<Note> querySelection() {
             if (_selection.Width == 0 || _selection.Height == 0) {
-                return _quadtree.Query(_selection.Location);
+                return _quadtree.QueryPoint(_selection.Location);
             }
-            return _quadtree.Query(_selection);
+            return _quadtree.QueryRect(_selection);
         }
 
         private Vector2 mouseToGrid(Vector2 v) {
@@ -177,7 +177,7 @@ namespace GameProject {
         }
 
         public void Draw(SpriteBatch s) {
-            foreach (var n in _quadtree.Query(Core.Camera.WorldBounds(), Core.Camera.Angle, Core.Camera.Origin))
+            foreach (var n in _quadtree.QueryRect(Core.Camera.WorldBounds(), Core.Camera.Angle, Core.Camera.Origin))
                 n.Draw(s, Color.White);
 
             // foreach (var n in _quadtree.Nodes)
@@ -198,7 +198,7 @@ namespace GameProject {
             if (_play) {
                 s.DrawLine(_playheadNew, _quadtree.Bounds.Top, _playheadNew, _quadtree.Bounds.Bottom, Color.Green, 8);
 
-                foreach (var n in _quadtree.Query(new RotRect(_playheadOld, _quadtree.Bounds.Top, _playheadNew - _playheadOld, _quadtree.Bounds.Height))) {
+                foreach (var n in _quadtree.QueryRect(new RotRect(_playheadOld, _quadtree.Bounds.Top, _playheadNew - _playheadOld, _quadtree.Bounds.Height))) {
                     n.Draw(s, Color.Red);
                 }
             }
