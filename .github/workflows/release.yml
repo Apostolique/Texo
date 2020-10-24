@@ -32,11 +32,11 @@ jobs:
         sudo apt-get install --install-recommends winehq-stable
         wget -qO- https://raw.githubusercontent.com/MonoGame/MonoGame/develop/Tools/MonoGame.Effect.Compiler/mgfxc_wine_setup.sh | sh
     - name: Build Windows
-      run: dotnet publish Platforms/Core -r win-x64 -c Release --output build-windows
+      run: dotnet publish Platforms/DesktopGL -r win-x64 -c Release --output build-windows
     - name: Build Osx
-      run: dotnet publish Platforms/Core -r osx-x64 -c Release --output build-osx
+      run: dotnet publish Platforms/DesktopGL -r osx-x64 -c Release --output build-osx
     - name: Build Linux
-      run: dotnet publish Platforms/Core -r linux-x64 -c Release --output build-linux
+      run: dotnet publish Platforms/DesktopGL -r linux-x64 -c Release --output build-linux
     - name: Clean NetCoreBeauty
       run: find . -name 'NetCoreBeauty' -type f -delete
     - name: Publish Windows build to itch.io
