@@ -24,23 +24,35 @@ namespace GameProject {
                 }
             }
             if (Triggers.RotateLeft.Pressed()) {
-                cameraRotate(MathHelper.PiOver4);
+                Core.Camera.Angle += MathHelper.PiOver4;
             }
             if (Triggers.RotateRight.Pressed()) {
-                cameraRotate(-MathHelper.PiOver4);
+                Core.Camera.Angle -= MathHelper.PiOver4;
             }
-            if (InputHelper.NewMouse.ScrollWheelValue - InputHelper.OldMouse.ScrollWheelValue != 0) {
-                cameraScale(InputHelper.NewMouse.ScrollWheelValue - InputHelper.OldMouse.ScrollWheelValue);
+            int scrollDelta = InputHelper.NewMouse.ScrollWheelValue - InputHelper.OldMouse.ScrollWheelValue;
+            if (scrollDelta != 0) {
+                // TODO: The diff multiplier should be a setting.
+                Core.Zoom = MathF.Max(Core.Zoom - scrollDelta * 0.0005f, 0.1f);
             }
+
+            Core.MouseWorld = Core.Camera.ScreenToWorld(InputHelper.NewMouse.X, InputHelper.NewMouse.Y);
 
             if (Triggers.CameraDrag.Pressed()) {
                 _mouseAnchor = Core.MouseWorld;
+                _isDragging = true;
             }
-            if (Triggers.CameraDrag.Held()) {
-                cameraTranslate(_mouseAnchor - Core.MouseWorld);
+            if (_isDragging && Triggers.CameraDrag.HeldOnly()) {
+                Core.Camera.XY += _mouseAnchor - Core.MouseWorld;
+                Core.MouseWorld = _mouseAnchor;
                 _playheadNew = Core.Camera.X;
-            } else if (_play) {
-                cameraTranslate(new Vector2(300 * gameTime.GetElapsedSeconds(), 0));
+            }
+            if (_isDragging && Triggers.CameraDrag.Released()) {
+                _isDragging = false;
+            }
+
+            if (!_isDragging && _play) {
+                Core.Camera.XY += new Vector2(300 * gameTime.GetElapsedSeconds(), 0);
+                Core.MouseWorld = Core.Camera.ScreenToWorld(InputHelper.NewMouse.X, InputHelper.NewMouse.Y);
 
                 _playheadOld = _playheadNew;
                 _playheadNew = Core.Camera.X;
@@ -204,30 +216,6 @@ namespace GameProject {
             }
         }
 
-        private void cameraRotate(float dAngle) {
-            Core.Camera.Angle += dAngle;
-
-            Core.UpdateMouseWorld();
-        }
-        private void cameraScale(float dScale) {
-            // TODO: The diff multiplier should be a setting.
-            Core.Linear = MathF.Max(Core.Linear - dScale * 0.0005f, 0.1f);
-            Core.Depth = Core.LinearToDepth(Core.Linear);
-            Core.Camera.Scale = new Vector2(Core.DepthToZoom(Core.Depth, 0));
-
-            Core.UpdateMouseWorld();
-        }
-        private void cameraTranslate(Vector2 dXY) {
-            Core.Camera.XY += dXY;
-
-            Core.UpdateMouseWorld();
-        }
-        private void cameraXY(Vector2 XY) {
-            Core.Camera.XY = XY;
-
-            Core.UpdateMouseWorld();
-        }
-
         enum Modes {
             selection,
             grab,
@@ -236,8 +224,8 @@ namespace GameProject {
         Modes _currentMode = Modes.selection;
         bool _play = false;
 
-        // TODO: Find a better way to do this.
         Vector2 _mouseAnchor = Vector2.Zero;
+        bool _isDragging = false;
 
         Rectangle _selection = new Rectangle(0, 0, 0, 0);
         Vector2 _selectionStart = Vector2.Zero;

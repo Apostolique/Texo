@@ -76,7 +76,6 @@ namespace GameProject {
                 Core.Midi.StopNote(50);
             }
 
-            Core.UpdateMouseWorld();
             if (Core.ShowMenu) {
                 Core.Menu.UpdateSetup();
                 Core.Menu.UpdateInput();
